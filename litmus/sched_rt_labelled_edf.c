@@ -132,7 +132,9 @@ static struct task_struct* demo_schedule(struct task_struct * prev)
         /* prev's task state */
         int exists, out_of_time, job_completed, self_suspends, preempt, resched;
 
-         if(prev->rt_validity == INVALID) {
+	TRACE_TASK("rt_validity of prev is %d\n", prev->rt_validity);
+        
+       	if(prev->rt_validity == INVALID) {
                 TRACE_TASK(prev, "Unable to schedule task since it is not RT valid\n");
                 // next = local_state->scheduled;
                 goto demo_schedule_end;
