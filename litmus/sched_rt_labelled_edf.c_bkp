@@ -68,10 +68,10 @@ static void demo_job_completion(struct task_struct *prev, int budget_exhausted)
  */
 static void demo_requeue(struct task_struct *tsk, struct demo_cpu_state *cpu_state)
 {
-	if(tsk->rt_validity == INVALID) {
-		TRACE_TASK(tsk, "Unable to requeue task since it is RT invalid\n");
-		return;
-	}
+        if(tsk->rt_validity == INVALID) {
+                TRACE_TASK(tsk, "Unable to requeue task since it is not RT valid\n");
+                return;
+        }
         if (is_released(tsk, litmus_clock())) {
                 /* Uses __add_ready() instead of add_ready() because we already
                  * hold the ready lock. */
@@ -132,6 +132,8 @@ static struct task_struct* demo_schedule(struct task_struct * prev)
         /* prev's task state */
         int exists, out_of_time, job_completed, self_suspends, preempt, resched;
 
+	TRACE_TASK(prev, "rt_validity of prev is %d\n", prev->rt_validity);
+
         raw_spin_lock(&local_state->local_queues.ready_lock);
 
         BUG_ON(local_state->scheduled && local_state->scheduled != prev);
@@ -186,8 +188,19 @@ static struct task_struct* demo_schedule(struct task_struct * prev)
          * scheduling decision.
          */
         sched_state_task_picked();
+        TRACE_TASK(prev, "scheduling decision made\n");
 
         raw_spin_unlock(&local_state->local_queues.ready_lock);
+
+        TRACE_TASK(next, "next->rt_validity = %d\n", next->rt_validity);
+        /* Check this after releasing the lock */
+        /*
+	if(next && next->rt_validity == INVALID)
+        {
+                TRACE_TASK(next, "UNable to schedule next since it is not RT valid.... demo_schedule() returning NULL\n");
+                return NULL;
+        }
+	*/
         return next;
 }
 
@@ -211,11 +224,11 @@ static void demo_task_new(struct task_struct *tsk, int on_runqueue,
         TRACE_TASK(tsk, "is a new RT task %llu (on runqueue:%d, running:%d)\n",
                    litmus_clock(), on_runqueue, is_running);
 
-	/* Check before acquiring the lock */
-	if(tsk->rt_validity == INVALID) {
-		TRACE_TASK(tsk, "Unable to add a new task since it is RT invalid\n");
-		return;
-	}
+        /* Check this before acquiring the lock */
+        if(tsk->rt_validity == INVALID) {
+                TRACE_TASK(tsk, "Unable to release task since it is not RT valid\n");
+                return;
+        }
 
         /* Acquire the lock protecting the state and disable interrupts. */
         raw_spin_lock_irqsave(&state->local_queues.ready_lock, flags);
@@ -238,12 +251,17 @@ static void demo_task_new(struct task_struct *tsk, int on_runqueue,
                 preempt_if_preemptable(state->scheduled, state->cpu);
 
         raw_spin_unlock_irqrestore(&state->local_queues.ready_lock, flags);
+
+        TRACE_TASK(tsk, "end of demo_task_new()\n");
 }
 
 static void demo_task_exit(struct task_struct *tsk)
 {
         unsigned long flags;
         struct demo_cpu_state *state = cpu_state_for(get_partition(tsk));
+
+        TRACE_TASK(tsk, "inside demo_task_exit()\n");
+
         raw_spin_lock_irqsave(&state->local_queues.ready_lock, flags);
 
         /* For simplicity, we assume here that the task is no longer queued anywhere else. This
@@ -270,11 +288,11 @@ static void demo_task_resume(struct task_struct  *tsk)
         lt_t now;
         TRACE_TASK(tsk, "wake_up at %llu\n", litmus_clock());
 
-	/* Check this before acquiring the lock */
-	if(tsk->rt_validity == INVALID) {
-		TRACE_TASK(tsk, "Unable to resume task since it is RT invalid\n");
-		return;
-	}
+        /* Check this before acquiring the lock */
+        if(tsk->rt_validity == INVALID) {
+                TRACE_TASK(tsk, "Unable to RESUME task since it is not RT valid\n");
+                return;
+        }
 
         raw_spin_lock_irqsave(&state->local_queues.ready_lock, flags);
 
@@ -283,8 +301,7 @@ static void demo_task_resume(struct task_struct  *tsk)
         if (is_sporadic(tsk) && is_tardy(tsk, now)) {
                 /* This sporadic task was gone for a "long" time and woke up past
                  * its deadline. Give it a new budget by triggering a job
-                 * release. */
-                release_at(tsk, now);
+                 * release. */release_at(tsk, now);
         }
 
         /* This check is required to avoid races with tasks that resume before
