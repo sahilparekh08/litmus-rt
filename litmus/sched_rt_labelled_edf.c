@@ -185,7 +185,6 @@ static struct task_struct* demo_schedule(struct task_struct * prev)
         }
 
         while(next) {
-                TRACE_TASK(next, "next->rt_validity = %d\n", next->rt_validity);
                 if(next->rt_validity == INVALID) {
                         TRACE_TASK(next, "Unable to schedule next task since it is RT invalid\n");
                         /* Put this back in the queue
@@ -224,6 +223,8 @@ static struct task_struct* demo_schedule(struct task_struct * prev)
         sched_state_task_picked();
 
         raw_spin_unlock(&local_state->local_queues.ready_lock);
+
+        TRACE_CUR("End of demo_schedule()\n");
 
         return next;
 }
@@ -277,6 +278,9 @@ static void demo_task_exit(struct task_struct *tsk)
 {
         unsigned long flags;
         struct demo_cpu_state *state = cpu_state_for(get_partition(tsk));
+
+        TRACE_TASK(tsk, "demo_task_exit() invoked.\n");
+
         raw_spin_lock_irqsave(&state->local_queues.ready_lock, flags);
 
         /* For simplicity, we assume here that the task is no longer queued anywhere else. This
