@@ -224,8 +224,6 @@ static struct task_struct* demo_schedule(struct task_struct * prev)
 
         raw_spin_unlock(&local_state->local_queues.ready_lock);
 
-        TRACE_CUR("End of demo_schedule()\n");
-
         return next;
 }
 
