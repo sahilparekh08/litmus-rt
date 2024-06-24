@@ -1,6 +1,7 @@
 #include <linux/module.h>
 #include <linux/percpu.h>
 #include <linux/sched.h>
+#include <linux/slab.h>
 #include <litmus/litmus.h>
 #include <litmus/budget.h>
 #include <litmus/edf_common.h>
@@ -68,11 +69,11 @@ static void demo_job_completion(struct task_struct *prev, int budget_exhausted)
  */
 static void demo_requeue(struct task_struct *tsk, struct demo_cpu_state *cpu_state)
 {
-	if(tsk->rt_validity == INVALID) {
-		TRACE_TASK(tsk, "Unable to requeue task since it is RT invalid\n");
-		return;
-	}
+        /* Ready queue is where a released task gets put
+         * Release queue is where a task to be released gets put */
         if (is_released(tsk, litmus_clock())) {
+                /* We do not need to check for RT validity here since we
+                 * would never release the task unless it is RT valid */
                 /* Uses __add_ready() instead of add_ready() because we already
                  * hold the ready lock. */
                 __add_ready(&cpu_state->local_queues, tsk);
@@ -122,6 +123,11 @@ static long demo_deactivate_plugin(void)
         return 0;
 }
 
+struct task_struct_ll {
+        struct task_struct* task;
+        struct task_struct_ll* rt_next;
+};
+
 static struct task_struct* demo_schedule(struct task_struct * prev)
 {
         struct demo_cpu_state *local_state = local_cpu_state();
@@ -132,6 +138,10 @@ static struct task_struct* demo_schedule(struct task_struct * prev)
         /* prev's task state */
         int exists, out_of_time, job_completed, self_suspends, preempt, resched;
 
+        /* create a list to keep track of all the next tasks that are RT invalid */
+        struct task_struct_ll* invalid_task = NULL;
+        struct task_struct_ll* next_invalid_task;
+        
         raw_spin_lock(&local_state->local_queues.ready_lock);
 
         BUG_ON(local_state->scheduled && local_state->scheduled != prev);
@@ -167,10 +177,36 @@ static struct task_struct* demo_schedule(struct task_struct * prev)
                 if (exists && !self_suspends) {
                         demo_requeue(prev, local_state);
                 }
+                /* __take_ready() removes the next job from the queue */
                 next = __take_ready(&local_state->local_queues);
         } else {
                 /* No preemption is required. */
                 next = local_state->scheduled;
+        }
+
+        while(next) {
+                TRACE_TASK(next, "next->rt_validity = %d\n", next->rt_validity);
+                if(next->rt_validity == INVALID) {
+                        TRACE_TASK(next, "Unable to schedule next task since it is RT invalid\n");
+                        /* Put this back in the queue
+                         * and pick some other task pick some other task */
+                        next_invalid_task = kmalloc(sizeof(struct task_struct_ll), GFP_KERNEL);
+                        next_invalid_task->task = next;
+                        next_invalid_task->rt_next = invalid_task;
+                        invalid_task = next_invalid_task;
+                        next = __take_ready(&local_state->local_queues);
+                } else {
+                        TRACE_TASK(next, "Scheduling next task\n");
+                        break;
+                }
+        }
+
+        /* Put back all the RT invalid tasks back in the queue */
+        while(invalid_task) {
+                next_invalid_task = invalid_task->rt_next;
+                __add_ready(&local_state->local_queues, invalid_task->task);
+                kfree(invalid_task);
+                invalid_task = next_invalid_task;
         }
 
         local_state->scheduled = next;
@@ -188,17 +224,6 @@ static struct task_struct* demo_schedule(struct task_struct * prev)
         sched_state_task_picked();
 
         raw_spin_unlock(&local_state->local_queues.ready_lock);
-
-        /* Only check this after releasing the lock */
-        if(next != NULL)
-        {
-                TRACE_TASK(next, "next->rt_validity = %d\n", next->rt_validity);
-                if(next->rt_validity == INVALID)
-                {
-                        TRACE_TASK(next, "Unable to schedule next task since it is RT invalid\n");
-                        return NULL;
-                }
-        }
 
         return next;
 }
@@ -223,19 +248,15 @@ static void demo_task_new(struct task_struct *tsk, int on_runqueue,
         TRACE_TASK(tsk, "is a new RT task %llu (on runqueue:%d, running:%d)\n",
                    litmus_clock(), on_runqueue, is_running);
 
-	/* Check before acquiring the lock */
-	if(tsk->rt_validity == INVALID) {
-		TRACE_TASK(tsk, "Unable to add a new task since it is RT invalid\n");
-		return;
-	}
-
         /* Acquire the lock protecting the state and disable interrupts. */
         raw_spin_lock_irqsave(&state->local_queues.ready_lock, flags);
 
         now = litmus_clock();
 
-        /* Release the first job now. */
-        release_at(tsk, now);
+        /* Release the first job now if it is RT valid */
+        if(tsk->rt_validity == VALID) {
+                release_at(tsk, now);
+        }
 
         if (is_running) {
                 /* If tsk is running, then no other task can be running
@@ -282,12 +303,6 @@ static void demo_task_resume(struct task_struct  *tsk)
         lt_t now;
         TRACE_TASK(tsk, "wake_up at %llu\n", litmus_clock());
 
-	/* Check this before acquiring the lock */
-	if(tsk->rt_validity == INVALID) {
-		TRACE_TASK(tsk, "Unable to resume task since it is RT invalid\n");
-		return;
-	}
-
         raw_spin_lock_irqsave(&state->local_queues.ready_lock, flags);
 
         now = litmus_clock();
@@ -296,7 +311,9 @@ static void demo_task_resume(struct task_struct  *tsk)
                 /* This sporadic task was gone for a "long" time and woke up past
                  * its deadline. Give it a new budget by triggering a job
                  * release. */
-                release_at(tsk, now);
+                if(tsk->rt_validity == VALID) {
+                        release_at(tsk, now);
+                }
         }
 
         /* This check is required to avoid races with tasks that resume before
