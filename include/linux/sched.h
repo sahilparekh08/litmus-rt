@@ -7,7 +7,7 @@
 
 
 struct sched_param {
-	int sched_priority;
+    int sched_priority;
 };
 
 #include <asm/param.h>	/* for HZ */
@@ -109,21 +109,21 @@ struct sched_param {
  * available in the scheduling class file or in Documentation/.
  */
 struct sched_attr {
-	u32 size;
+    u32 size;
 
-	u32 sched_policy;
-	u64 sched_flags;
+    u32 sched_policy;
+    u64 sched_flags;
 
-	/* SCHED_NORMAL, SCHED_BATCH */
-	s32 sched_nice;
+    /* SCHED_NORMAL, SCHED_BATCH */
+    s32 sched_nice;
 
-	/* SCHED_FIFO, SCHED_RR */
-	u32 sched_priority;
+    /* SCHED_FIFO, SCHED_RR */
+    u32 sched_priority;
 
-	/* SCHED_DEADLINE */
-	u64 sched_runtime;
-	u64 sched_deadline;
-	u64 sched_period;
+    /* SCHED_DEADLINE */
+    u64 sched_runtime;
+    u64 sched_deadline;
+    u64 sched_period;
 };
 
 #include <litmus/rt_param.h>
@@ -228,7 +228,7 @@ extern void proc_sched_set_task(struct task_struct *p);
 #define TASK_STATE_TO_CHAR_STR "RSDTtXZxKWPNn"
 
 extern char ___assert_task_state[1 - 2*!!(
-		sizeof(TASK_STATE_TO_CHAR_STR)-1 != ilog2(TASK_STATE_MAX)+1)];
+        sizeof(TASK_STATE_TO_CHAR_STR)-1 != ilog2(TASK_STATE_MAX)+1)];
 
 /* Convenience macros for the sake of set_task_state */
 #define TASK_KILLABLE		(TASK_WAKEKILL | TASK_UNINTERRUPTIBLE)
@@ -361,7 +361,7 @@ extern void show_state_filter(unsigned long state_filter);
 
 static inline void show_state(void)
 {
-	show_state_filter(0);
+        show_state_filter(0);
 }
 
 extern void show_regs(struct pt_regs *);
@@ -448,7 +448,7 @@ extern long io_schedule_timeout(long timeout);
 
 static inline void io_schedule(void)
 {
-	io_schedule_timeout(MAX_SCHEDULE_TIMEOUT);
+        io_schedule_timeout(MAX_SCHEDULE_TIMEOUT);
 }
 
 void __noreturn do_task_dead(void);
@@ -460,11 +460,11 @@ struct user_namespace;
 extern void arch_pick_mmap_layout(struct mm_struct *mm);
 extern unsigned long
 arch_get_unmapped_area(struct file *, unsigned long, unsigned long,
-		       unsigned long, unsigned long);
+                       unsigned long, unsigned long);
 extern unsigned long
 arch_get_unmapped_area_topdown(struct file *filp, unsigned long addr,
-			  unsigned long len, unsigned long pgoff,
-			  unsigned long flags);
+                               unsigned long len, unsigned long pgoff,
+                               unsigned long flags);
 #else
 static inline void arch_pick_mmap_layout(struct mm_struct *mm) {}
 #endif
@@ -488,12 +488,12 @@ extern void set_dumpable(struct mm_struct *mm, int value);
  */
 static inline int __get_dumpable(unsigned long mm_flags)
 {
-	return mm_flags & MMF_DUMPABLE_MASK;
+        return mm_flags & MMF_DUMPABLE_MASK;
 }
 
 static inline int get_dumpable(struct mm_struct *mm)
 {
-	return __get_dumpable(mm->flags);
+        return __get_dumpable(mm->flags);
 }
 
 /* coredump filter bits */
@@ -520,7 +520,7 @@ static inline int get_dumpable(struct mm_struct *mm)
 #else
 # define MMF_DUMP_MASK_DEFAULT_ELF	0
 #endif
-					/* leave room for more dump flags */
+/* leave room for more dump flags */
 #define MMF_VM_MERGEABLE	16	/* KSM may merge identical pages */
 #define MMF_VM_HUGEPAGE		17	/* set when VM_HUGEPAGE is set on vma */
 #define MMF_EXE_FILE_CHANGED	18	/* see prctl_set_mm_exe_file() */
@@ -534,25 +534,25 @@ static inline int get_dumpable(struct mm_struct *mm)
 #define MMF_INIT_MASK		(MMF_DUMPABLE_MASK | MMF_DUMP_FILTER_MASK)
 
 struct sighand_struct {
-	atomic_t		count;
-	struct k_sigaction	action[_NSIG];
-	spinlock_t		siglock;
-	wait_queue_head_t	signalfd_wqh;
+    atomic_t		count;
+    struct k_sigaction	action[_NSIG];
+    spinlock_t		siglock;
+    wait_queue_head_t	signalfd_wqh;
 };
 
 struct pacct_struct {
-	int			ac_flag;
-	long			ac_exitcode;
-	unsigned long		ac_mem;
-	cputime_t		ac_utime, ac_stime;
-	unsigned long		ac_minflt, ac_majflt;
+    int			ac_flag;
+    long			ac_exitcode;
+    unsigned long		ac_mem;
+    cputime_t		ac_utime, ac_stime;
+    unsigned long		ac_minflt, ac_majflt;
 };
 
 struct cpu_itimer {
-	cputime_t expires;
-	cputime_t incr;
-	u32 error;
-	u32 incr_error;
+    cputime_t expires;
+    cputime_t incr;
+    u32 error;
+    u32 incr_error;
 };
 
 /**
@@ -566,17 +566,17 @@ struct cpu_itimer {
  */
 struct prev_cputime {
 #ifndef CONFIG_VIRT_CPU_ACCOUNTING_NATIVE
-	cputime_t utime;
-	cputime_t stime;
-	raw_spinlock_t lock;
+    cputime_t utime;
+    cputime_t stime;
+    raw_spinlock_t lock;
 #endif
 };
 
 static inline void prev_cputime_init(struct prev_cputime *prev)
 {
 #ifndef CONFIG_VIRT_CPU_ACCOUNTING_NATIVE
-	prev->utime = prev->stime = 0;
-	raw_spin_lock_init(&prev->lock);
+        prev->utime = prev->stime = 0;
+        raw_spin_lock_init(&prev->lock);
 #endif
 }
 
@@ -591,9 +591,9 @@ static inline void prev_cputime_init(struct prev_cputime *prev)
  * these counts together and treat all three of them in parallel.
  */
 struct task_cputime {
-	cputime_t utime;
-	cputime_t stime;
-	unsigned long long sum_exec_runtime;
+    cputime_t utime;
+    cputime_t stime;
+    unsigned long long sum_exec_runtime;
 };
 
 /* Alternate field names when used to cache expirations. */
@@ -613,9 +613,9 @@ struct task_cputime {
  * storing and updating task_cputime statistics without locking.
  */
 struct task_cputime_atomic {
-	atomic64_t utime;
-	atomic64_t stime;
-	atomic64_t sum_exec_runtime;
+    atomic64_t utime;
+    atomic64_t stime;
+    atomic64_t sum_exec_runtime;
 };
 
 #define INIT_CPUTIME_ATOMIC \
@@ -658,9 +658,9 @@ struct task_cputime_atomic {
  * used for thread group CPU timer calculations.
  */
 struct thread_group_cputimer {
-	struct task_cputime_atomic cputime_atomic;
-	bool running;
-	bool checking_timer;
+    struct task_cputime_atomic cputime_atomic;
+    bool running;
+    bool checking_timer;
 };
 
 #include <linux/rwsem.h>
@@ -674,145 +674,145 @@ struct autogroup;
  * the locking of signal_struct.
  */
 struct signal_struct {
-	atomic_t		sigcnt;
-	atomic_t		live;
-	int			nr_threads;
-	struct list_head	thread_head;
+    atomic_t		sigcnt;
+    atomic_t		live;
+    int			nr_threads;
+    struct list_head	thread_head;
 
-	wait_queue_head_t	wait_chldexit;	/* for wait4() */
+    wait_queue_head_t	wait_chldexit;	/* for wait4() */
 
-	/* current thread group signal load-balancing target: */
-	struct task_struct	*curr_target;
+    /* current thread group signal load-balancing target: */
+    struct task_struct	*curr_target;
 
-	/* shared signal handling: */
-	struct sigpending	shared_pending;
+    /* shared signal handling: */
+    struct sigpending	shared_pending;
 
-	/* thread group exit support */
-	int			group_exit_code;
-	/* overloaded:
-	 * - notify group_exit_task when ->count is equal to notify_count
-	 * - everyone except group_exit_task is stopped during signal delivery
-	 *   of fatal signals, group_exit_task processes the signal.
-	 */
-	int			notify_count;
-	struct task_struct	*group_exit_task;
+    /* thread group exit support */
+    int			group_exit_code;
+    /* overloaded:
+     * - notify group_exit_task when ->count is equal to notify_count
+     * - everyone except group_exit_task is stopped during signal delivery
+     *   of fatal signals, group_exit_task processes the signal.
+     */
+    int			notify_count;
+    struct task_struct	*group_exit_task;
 
-	/* thread group stop support, overloads group_exit_code too */
-	int			group_stop_count;
-	unsigned int		flags; /* see SIGNAL_* flags below */
+    /* thread group stop support, overloads group_exit_code too */
+    int			group_stop_count;
+    unsigned int		flags; /* see SIGNAL_* flags below */
 
-	/*
-	 * PR_SET_CHILD_SUBREAPER marks a process, like a service
-	 * manager, to re-parent orphan (double-forking) child processes
-	 * to this process instead of 'init'. The service manager is
-	 * able to receive SIGCHLD signals and is able to investigate
-	 * the process until it calls wait(). All children of this
-	 * process will inherit a flag if they should look for a
-	 * child_subreaper process at exit.
-	 */
-	unsigned int		is_child_subreaper:1;
-	unsigned int		has_child_subreaper:1;
+    /*
+     * PR_SET_CHILD_SUBREAPER marks a process, like a service
+     * manager, to re-parent orphan (double-forking) child processes
+     * to this process instead of 'init'. The service manager is
+     * able to receive SIGCHLD signals and is able to investigate
+     * the process until it calls wait(). All children of this
+     * process will inherit a flag if they should look for a
+     * child_subreaper process at exit.
+     */
+    unsigned int		is_child_subreaper:1;
+    unsigned int		has_child_subreaper:1;
 
-	/* POSIX.1b Interval Timers */
-	int			posix_timer_id;
-	struct list_head	posix_timers;
+    /* POSIX.1b Interval Timers */
+    int			posix_timer_id;
+    struct list_head	posix_timers;
 
-	/* ITIMER_REAL timer for the process */
-	struct hrtimer real_timer;
-	struct pid *leader_pid;
-	ktime_t it_real_incr;
+    /* ITIMER_REAL timer for the process */
+    struct hrtimer real_timer;
+    struct pid *leader_pid;
+    ktime_t it_real_incr;
 
-	/*
-	 * ITIMER_PROF and ITIMER_VIRTUAL timers for the process, we use
-	 * CPUCLOCK_PROF and CPUCLOCK_VIRT for indexing array as these
-	 * values are defined to 0 and 1 respectively
-	 */
-	struct cpu_itimer it[2];
+    /*
+     * ITIMER_PROF and ITIMER_VIRTUAL timers for the process, we use
+     * CPUCLOCK_PROF and CPUCLOCK_VIRT for indexing array as these
+     * values are defined to 0 and 1 respectively
+     */
+    struct cpu_itimer it[2];
 
-	/*
-	 * Thread group totals for process CPU timers.
-	 * See thread_group_cputimer(), et al, for details.
-	 */
-	struct thread_group_cputimer cputimer;
+    /*
+     * Thread group totals for process CPU timers.
+     * See thread_group_cputimer(), et al, for details.
+     */
+    struct thread_group_cputimer cputimer;
 
-	/* Earliest-expiration cache. */
-	struct task_cputime cputime_expires;
+    /* Earliest-expiration cache. */
+    struct task_cputime cputime_expires;
 
 #ifdef CONFIG_NO_HZ_FULL
-	atomic_t tick_dep_mask;
+    atomic_t tick_dep_mask;
 #endif
 
-	struct list_head cpu_timers[3];
+    struct list_head cpu_timers[3];
 
-	struct pid *tty_old_pgrp;
+    struct pid *tty_old_pgrp;
 
-	/* boolean value for session group leader */
-	int leader;
+    /* boolean value for session group leader */
+    int leader;
 
-	struct tty_struct *tty; /* NULL if no tty */
+    struct tty_struct *tty; /* NULL if no tty */
 
 #ifdef CONFIG_SCHED_AUTOGROUP
-	struct autogroup *autogroup;
+    struct autogroup *autogroup;
 #endif
-	/*
-	 * Cumulative resource counters for dead threads in the group,
-	 * and for reaped dead child processes forked by this group.
-	 * Live threads maintain their own counters and add to these
-	 * in __exit_signal, except for the group leader.
-	 */
-	seqlock_t stats_lock;
-	cputime_t utime, stime, cutime, cstime;
-	cputime_t gtime;
-	cputime_t cgtime;
-	struct prev_cputime prev_cputime;
-	unsigned long nvcsw, nivcsw, cnvcsw, cnivcsw;
-	unsigned long min_flt, maj_flt, cmin_flt, cmaj_flt;
-	unsigned long inblock, oublock, cinblock, coublock;
-	unsigned long maxrss, cmaxrss;
-	struct task_io_accounting ioac;
+    /*
+     * Cumulative resource counters for dead threads in the group,
+     * and for reaped dead child processes forked by this group.
+     * Live threads maintain their own counters and add to these
+     * in __exit_signal, except for the group leader.
+     */
+    seqlock_t stats_lock;
+    cputime_t utime, stime, cutime, cstime;
+    cputime_t gtime;
+    cputime_t cgtime;
+    struct prev_cputime prev_cputime;
+    unsigned long nvcsw, nivcsw, cnvcsw, cnivcsw;
+    unsigned long min_flt, maj_flt, cmin_flt, cmaj_flt;
+    unsigned long inblock, oublock, cinblock, coublock;
+    unsigned long maxrss, cmaxrss;
+    struct task_io_accounting ioac;
 
-	/*
-	 * Cumulative ns of schedule CPU time fo dead threads in the
-	 * group, not including a zombie group leader, (This only differs
-	 * from jiffies_to_ns(utime + stime) if sched_clock uses something
-	 * other than jiffies.)
-	 */
-	unsigned long long sum_sched_runtime;
+    /*
+     * Cumulative ns of schedule CPU time fo dead threads in the
+     * group, not including a zombie group leader, (This only differs
+     * from jiffies_to_ns(utime + stime) if sched_clock uses something
+     * other than jiffies.)
+     */
+    unsigned long long sum_sched_runtime;
 
-	/*
-	 * We don't bother to synchronize most readers of this at all,
-	 * because there is no reader checking a limit that actually needs
-	 * to get both rlim_cur and rlim_max atomically, and either one
-	 * alone is a single word that can safely be read normally.
-	 * getrlimit/setrlimit use task_lock(current->group_leader) to
-	 * protect this instead of the siglock, because they really
-	 * have no need to disable irqs.
-	 */
-	struct rlimit rlim[RLIM_NLIMITS];
+    /*
+     * We don't bother to synchronize most readers of this at all,
+     * because there is no reader checking a limit that actually needs
+     * to get both rlim_cur and rlim_max atomically, and either one
+     * alone is a single word that can safely be read normally.
+     * getrlimit/setrlimit use task_lock(current->group_leader) to
+     * protect this instead of the siglock, because they really
+     * have no need to disable irqs.
+     */
+    struct rlimit rlim[RLIM_NLIMITS];
 
 #ifdef CONFIG_BSD_PROCESS_ACCT
-	struct pacct_struct pacct;	/* per-process accounting information */
+    struct pacct_struct pacct;	/* per-process accounting information */
 #endif
 #ifdef CONFIG_TASKSTATS
-	struct taskstats *stats;
+    struct taskstats *stats;
 #endif
 #ifdef CONFIG_AUDIT
-	unsigned audit_tty;
-	struct tty_audit_buf *tty_audit_buf;
+    unsigned audit_tty;
+    struct tty_audit_buf *tty_audit_buf;
 #endif
 
-	/*
-	 * Thread is the potential origin of an oom condition; kill first on
-	 * oom
-	 */
-	bool oom_flag_origin;
-	short oom_score_adj;		/* OOM kill score adjustment */
-	short oom_score_adj_min;	/* OOM kill score adjustment min value.
+    /*
+     * Thread is the potential origin of an oom condition; kill first on
+     * oom
+     */
+    bool oom_flag_origin;
+    short oom_score_adj;		/* OOM kill score adjustment */
+    short oom_score_adj_min;	/* OOM kill score adjustment min value.
 					 * Only settable by CAP_SYS_RESOURCE. */
-	struct mm_struct *oom_mm;	/* recorded mm when the thread group got
+    struct mm_struct *oom_mm;	/* recorded mm when the thread group got
 					 * killed by the oom killer */
 
-	struct mutex cred_guard_mutex;	/* guard against foreign influences on
+    struct mutex cred_guard_mutex;	/* guard against foreign influences on
 					 * credential calculations
 					 * (notably. ptrace) */
 };
@@ -836,46 +836,46 @@ struct signal_struct {
 /* If true, all threads except ->group_exit_task have pending SIGKILL */
 static inline int signal_group_exit(const struct signal_struct *sig)
 {
-	return	(sig->flags & SIGNAL_GROUP_EXIT) ||
-		(sig->group_exit_task != NULL);
+        return	(sig->flags & SIGNAL_GROUP_EXIT) ||
+                      (sig->group_exit_task != NULL);
 }
 
 /*
  * Some day this will be a full-fledged user tracking system..
  */
 struct user_struct {
-	atomic_t __count;	/* reference count */
-	atomic_t processes;	/* How many processes does this user have? */
-	atomic_t sigpending;	/* How many pending signals does this user have? */
+    atomic_t __count;	/* reference count */
+    atomic_t processes;	/* How many processes does this user have? */
+    atomic_t sigpending;	/* How many pending signals does this user have? */
 #ifdef CONFIG_INOTIFY_USER
-	atomic_t inotify_watches; /* How many inotify watches does this user have? */
-	atomic_t inotify_devs;	/* How many inotify devs does this user have opened? */
+    atomic_t inotify_watches; /* How many inotify watches does this user have? */
+    atomic_t inotify_devs;	/* How many inotify devs does this user have opened? */
 #endif
 #ifdef CONFIG_FANOTIFY
-	atomic_t fanotify_listeners;
+    atomic_t fanotify_listeners;
 #endif
 #ifdef CONFIG_EPOLL
-	atomic_long_t epoll_watches; /* The number of file descriptors currently watched */
+    atomic_long_t epoll_watches; /* The number of file descriptors currently watched */
 #endif
 #ifdef CONFIG_POSIX_MQUEUE
-	/* protected by mq_lock	*/
-	unsigned long mq_bytes;	/* How many bytes can be allocated to mqueue? */
+    /* protected by mq_lock	*/
+    unsigned long mq_bytes;	/* How many bytes can be allocated to mqueue? */
 #endif
-	unsigned long locked_shm; /* How many pages of mlocked shm ? */
-	unsigned long unix_inflight;	/* How many files in flight in unix sockets */
-	atomic_long_t pipe_bufs;  /* how many pages are allocated in pipe buffers */
+    unsigned long locked_shm; /* How many pages of mlocked shm ? */
+    unsigned long unix_inflight;	/* How many files in flight in unix sockets */
+    atomic_long_t pipe_bufs;  /* how many pages are allocated in pipe buffers */
 
 #ifdef CONFIG_KEYS
-	struct key *uid_keyring;	/* UID specific keyring */
-	struct key *session_keyring;	/* UID's default session keyring */
+    struct key *uid_keyring;	/* UID specific keyring */
+    struct key *session_keyring;	/* UID's default session keyring */
 #endif
 
-	/* Hash table maintenance information */
-	struct hlist_node uidhash_node;
-	kuid_t uid;
+    /* Hash table maintenance information */
+    struct hlist_node uidhash_node;
+    kuid_t uid;
 
 #if defined(CONFIG_PERF_EVENTS) || defined(CONFIG_BPF_SYSCALL)
-	atomic_long_t locked_vm;
+    atomic_long_t locked_vm;
 #endif
 };
 
@@ -892,56 +892,56 @@ struct reclaim_state;
 
 #ifdef CONFIG_SCHED_INFO
 struct sched_info {
-	/* cumulative counters */
-	unsigned long pcount;	      /* # of times run on this cpu */
-	unsigned long long run_delay; /* time spent waiting on a runqueue */
+    /* cumulative counters */
+    unsigned long pcount;	      /* # of times run on this cpu */
+    unsigned long long run_delay; /* time spent waiting on a runqueue */
 
-	/* timestamps */
-	unsigned long long last_arrival,/* when we last ran on a cpu */
-			   last_queued;	/* when we were last queued to run */
+    /* timestamps */
+    unsigned long long last_arrival,/* when we last ran on a cpu */
+    last_queued;	/* when we were last queued to run */
 };
 #endif /* CONFIG_SCHED_INFO */
 
 #ifdef CONFIG_TASK_DELAY_ACCT
 struct task_delay_info {
-	spinlock_t	lock;
-	unsigned int	flags;	/* Private per-task flags */
+    spinlock_t	lock;
+    unsigned int	flags;	/* Private per-task flags */
 
-	/* For each stat XXX, add following, aligned appropriately
-	 *
-	 * struct timespec XXX_start, XXX_end;
-	 * u64 XXX_delay;
-	 * u32 XXX_count;
-	 *
-	 * Atomicity of updates to XXX_delay, XXX_count protected by
-	 * single lock above (split into XXX_lock if contention is an issue).
-	 */
+    /* For each stat XXX, add following, aligned appropriately
+     *
+     * struct timespec XXX_start, XXX_end;
+     * u64 XXX_delay;
+     * u32 XXX_count;
+     *
+     * Atomicity of updates to XXX_delay, XXX_count protected by
+     * single lock above (split into XXX_lock if contention is an issue).
+     */
 
-	/*
-	 * XXX_count is incremented on every XXX operation, the delay
-	 * associated with the operation is added to XXX_delay.
-	 * XXX_delay contains the accumulated delay time in nanoseconds.
-	 */
-	u64 blkio_start;	/* Shared by blkio, swapin */
-	u64 blkio_delay;	/* wait for sync block io completion */
-	u64 swapin_delay;	/* wait for swapin block io completion */
-	u32 blkio_count;	/* total count of the number of sync block */
-				/* io operations performed */
-	u32 swapin_count;	/* total count of the number of swapin block */
-				/* io operations performed */
+    /*
+     * XXX_count is incremented on every XXX operation, the delay
+     * associated with the operation is added to XXX_delay.
+     * XXX_delay contains the accumulated delay time in nanoseconds.
+     */
+    u64 blkio_start;	/* Shared by blkio, swapin */
+    u64 blkio_delay;	/* wait for sync block io completion */
+    u64 swapin_delay;	/* wait for swapin block io completion */
+    u32 blkio_count;	/* total count of the number of sync block */
+    /* io operations performed */
+    u32 swapin_count;	/* total count of the number of swapin block */
+    /* io operations performed */
 
-	u64 freepages_start;
-	u64 freepages_delay;	/* wait for memory reclaim */
-	u32 freepages_count;	/* total count of memory reclaim */
+    u64 freepages_start;
+    u64 freepages_delay;	/* wait for memory reclaim */
+    u32 freepages_count;	/* total count of memory reclaim */
 };
 #endif	/* CONFIG_TASK_DELAY_ACCT */
 
 static inline int sched_info_on(void)
 {
 #ifdef CONFIG_SCHEDSTATS
-	return 1;
+        return 1;
 #elif defined(CONFIG_TASK_DELAY_ACCT)
-	extern int delayacct_on;
+        extern int delayacct_on;
 	return delayacct_on;
 #else
 	return 0;
@@ -953,10 +953,10 @@ void force_schedstat_enabled(void);
 #endif
 
 enum cpu_idle_type {
-	CPU_IDLE,
-	CPU_NOT_IDLE,
-	CPU_NEWLY_IDLE,
-	CPU_MAX_IDLE_TYPES
+    CPU_IDLE,
+    CPU_NOT_IDLE,
+    CPU_NEWLY_IDLE,
+    CPU_MAX_IDLE_TYPES
 };
 
 /*
@@ -1002,12 +1002,12 @@ enum cpu_idle_type {
  * wakeup condition has in fact occurred.
  */
 struct wake_q_node {
-	struct wake_q_node *next;
+    struct wake_q_node *next;
 };
 
 struct wake_q_head {
-	struct wake_q_node *first;
-	struct wake_q_node **lastp;
+    struct wake_q_node *first;
+    struct wake_q_node **lastp;
 };
 
 #define WAKE_Q_TAIL ((struct wake_q_node *) 0x01)
@@ -1016,7 +1016,7 @@ struct wake_q_head {
 	struct wake_q_head name = { WAKE_Q_TAIL, &name.first }
 
 extern void wake_q_add(struct wake_q_head *head,
-		       struct task_struct *task);
+                       struct task_struct *task);
 extern void wake_up_q(struct wake_q_head *head);
 
 /*
@@ -1042,26 +1042,26 @@ extern void wake_up_q(struct wake_q_head *head);
 #ifdef CONFIG_SCHED_SMT
 static inline int cpu_smt_flags(void)
 {
-	return SD_SHARE_CPUCAPACITY | SD_SHARE_PKG_RESOURCES;
+        return SD_SHARE_CPUCAPACITY | SD_SHARE_PKG_RESOURCES;
 }
 #endif
 
 #ifdef CONFIG_SCHED_MC
 static inline int cpu_core_flags(void)
 {
-	return SD_SHARE_PKG_RESOURCES;
+        return SD_SHARE_PKG_RESOURCES;
 }
 #endif
 
 #ifdef CONFIG_NUMA
 static inline int cpu_numa_flags(void)
 {
-	return SD_NUMA;
+        return SD_NUMA;
 }
 #endif
 
 struct sched_domain_attr {
-	int relax_domain_level;
+    int relax_domain_level;
 };
 
 #define SD_ATTR_INIT	(struct sched_domain_attr) {	\
@@ -1073,101 +1073,101 @@ extern int sched_domain_level_max;
 struct sched_group;
 
 struct sched_domain_shared {
-	atomic_t	ref;
-	atomic_t	nr_busy_cpus;
-	int		has_idle_cores;
+    atomic_t	ref;
+    atomic_t	nr_busy_cpus;
+    int		has_idle_cores;
 };
 
 struct sched_domain {
-	/* These fields must be setup */
-	struct sched_domain *parent;	/* top domain must be null terminated */
-	struct sched_domain *child;	/* bottom domain must be null terminated */
-	struct sched_group *groups;	/* the balancing groups of the domain */
-	unsigned long min_interval;	/* Minimum balance interval ms */
-	unsigned long max_interval;	/* Maximum balance interval ms */
-	unsigned int busy_factor;	/* less balancing by factor if busy */
-	unsigned int imbalance_pct;	/* No balance until over watermark */
-	unsigned int cache_nice_tries;	/* Leave cache hot tasks for # tries */
-	unsigned int busy_idx;
-	unsigned int idle_idx;
-	unsigned int newidle_idx;
-	unsigned int wake_idx;
-	unsigned int forkexec_idx;
-	unsigned int smt_gain;
+    /* These fields must be setup */
+    struct sched_domain *parent;	/* top domain must be null terminated */
+    struct sched_domain *child;	/* bottom domain must be null terminated */
+    struct sched_group *groups;	/* the balancing groups of the domain */
+    unsigned long min_interval;	/* Minimum balance interval ms */
+    unsigned long max_interval;	/* Maximum balance interval ms */
+    unsigned int busy_factor;	/* less balancing by factor if busy */
+    unsigned int imbalance_pct;	/* No balance until over watermark */
+    unsigned int cache_nice_tries;	/* Leave cache hot tasks for # tries */
+    unsigned int busy_idx;
+    unsigned int idle_idx;
+    unsigned int newidle_idx;
+    unsigned int wake_idx;
+    unsigned int forkexec_idx;
+    unsigned int smt_gain;
 
-	int nohz_idle;			/* NOHZ IDLE status */
-	int flags;			/* See SD_* */
-	int level;
+    int nohz_idle;			/* NOHZ IDLE status */
+    int flags;			/* See SD_* */
+    int level;
 
-	/* Runtime fields. */
-	unsigned long last_balance;	/* init to jiffies. units in jiffies */
-	unsigned int balance_interval;	/* initialise to 1. units in ms. */
-	unsigned int nr_balance_failed; /* initialise to 0 */
+    /* Runtime fields. */
+    unsigned long last_balance;	/* init to jiffies. units in jiffies */
+    unsigned int balance_interval;	/* initialise to 1. units in ms. */
+    unsigned int nr_balance_failed; /* initialise to 0 */
 
-	/* idle_balance() stats */
-	u64 max_newidle_lb_cost;
-	unsigned long next_decay_max_lb_cost;
+    /* idle_balance() stats */
+    u64 max_newidle_lb_cost;
+    unsigned long next_decay_max_lb_cost;
 
-	u64 avg_scan_cost;		/* select_idle_sibling */
+    u64 avg_scan_cost;		/* select_idle_sibling */
 
 #ifdef CONFIG_SCHEDSTATS
-	/* load_balance() stats */
-	unsigned int lb_count[CPU_MAX_IDLE_TYPES];
-	unsigned int lb_failed[CPU_MAX_IDLE_TYPES];
-	unsigned int lb_balanced[CPU_MAX_IDLE_TYPES];
-	unsigned int lb_imbalance[CPU_MAX_IDLE_TYPES];
-	unsigned int lb_gained[CPU_MAX_IDLE_TYPES];
-	unsigned int lb_hot_gained[CPU_MAX_IDLE_TYPES];
-	unsigned int lb_nobusyg[CPU_MAX_IDLE_TYPES];
-	unsigned int lb_nobusyq[CPU_MAX_IDLE_TYPES];
+    /* load_balance() stats */
+    unsigned int lb_count[CPU_MAX_IDLE_TYPES];
+    unsigned int lb_failed[CPU_MAX_IDLE_TYPES];
+    unsigned int lb_balanced[CPU_MAX_IDLE_TYPES];
+    unsigned int lb_imbalance[CPU_MAX_IDLE_TYPES];
+    unsigned int lb_gained[CPU_MAX_IDLE_TYPES];
+    unsigned int lb_hot_gained[CPU_MAX_IDLE_TYPES];
+    unsigned int lb_nobusyg[CPU_MAX_IDLE_TYPES];
+    unsigned int lb_nobusyq[CPU_MAX_IDLE_TYPES];
 
-	/* Active load balancing */
-	unsigned int alb_count;
-	unsigned int alb_failed;
-	unsigned int alb_pushed;
+    /* Active load balancing */
+    unsigned int alb_count;
+    unsigned int alb_failed;
+    unsigned int alb_pushed;
 
-	/* SD_BALANCE_EXEC stats */
-	unsigned int sbe_count;
-	unsigned int sbe_balanced;
-	unsigned int sbe_pushed;
+    /* SD_BALANCE_EXEC stats */
+    unsigned int sbe_count;
+    unsigned int sbe_balanced;
+    unsigned int sbe_pushed;
 
-	/* SD_BALANCE_FORK stats */
-	unsigned int sbf_count;
-	unsigned int sbf_balanced;
-	unsigned int sbf_pushed;
+    /* SD_BALANCE_FORK stats */
+    unsigned int sbf_count;
+    unsigned int sbf_balanced;
+    unsigned int sbf_pushed;
 
-	/* try_to_wake_up() stats */
-	unsigned int ttwu_wake_remote;
-	unsigned int ttwu_move_affine;
-	unsigned int ttwu_move_balance;
+    /* try_to_wake_up() stats */
+    unsigned int ttwu_wake_remote;
+    unsigned int ttwu_move_affine;
+    unsigned int ttwu_move_balance;
 #endif
 #ifdef CONFIG_SCHED_DEBUG
-	char *name;
+    char *name;
 #endif
-	union {
-		void *private;		/* used during construction */
-		struct rcu_head rcu;	/* used during destruction */
-	};
-	struct sched_domain_shared *shared;
+    union {
+        void *private;		/* used during construction */
+        struct rcu_head rcu;	/* used during destruction */
+    };
+    struct sched_domain_shared *shared;
 
-	unsigned int span_weight;
-	/*
-	 * Span of all CPUs in this domain.
-	 *
-	 * NOTE: this field is variable length. (Allocated dynamically
-	 * by attaching extra space to the end of the structure,
-	 * depending on how many CPUs the kernel has booted up with)
-	 */
-	unsigned long span[0];
+    unsigned int span_weight;
+    /*
+     * Span of all CPUs in this domain.
+     *
+     * NOTE: this field is variable length. (Allocated dynamically
+     * by attaching extra space to the end of the structure,
+     * depending on how many CPUs the kernel has booted up with)
+     */
+    unsigned long span[0];
 };
 
 static inline struct cpumask *sched_domain_span(struct sched_domain *sd)
 {
-	return to_cpumask(sd->span);
+        return to_cpumask(sd->span);
 }
 
 extern void partition_sched_domains(int ndoms_new, cpumask_var_t doms_new[],
-				    struct sched_domain_attr *dattr_new);
+                                    struct sched_domain_attr *dattr_new);
 
 /* Allocate an array of sched domains, for partition_sched_domains(). */
 cpumask_var_t *alloc_sched_domains(unsigned int ndoms);
@@ -1181,20 +1181,20 @@ typedef int (*sched_domain_flags_f)(void);
 #define SDTL_OVERLAP	0x01
 
 struct sd_data {
-	struct sched_domain **__percpu sd;
-	struct sched_domain_shared **__percpu sds;
-	struct sched_group **__percpu sg;
-	struct sched_group_capacity **__percpu sgc;
+    struct sched_domain **__percpu sd;
+    struct sched_domain_shared **__percpu sds;
+    struct sched_group **__percpu sg;
+    struct sched_group_capacity **__percpu sgc;
 };
 
 struct sched_domain_topology_level {
-	sched_domain_mask_f mask;
-	sched_domain_flags_f sd_flags;
-	int		    flags;
-	int		    numa_level;
-	struct sd_data      data;
+    sched_domain_mask_f mask;
+    sched_domain_flags_f sd_flags;
+    int		    flags;
+    int		    numa_level;
+    struct sd_data      data;
 #ifdef CONFIG_SCHED_DEBUG
-	char                *name;
+    char                *name;
 #endif
 };
 
@@ -1240,8 +1240,8 @@ struct pipe_inode_info;
 struct uts_namespace;
 
 struct load_weight {
-	unsigned long weight;
-	u32 inv_weight;
+    unsigned long weight;
+    u32 inv_weight;
 };
 
 /*
@@ -1297,95 +1297,95 @@ struct load_weight {
  * issues.
  */
 struct sched_avg {
-	u64 last_update_time, load_sum;
-	u32 util_sum, period_contrib;
-	unsigned long load_avg, util_avg;
+    u64 last_update_time, load_sum;
+    u32 util_sum, period_contrib;
+    unsigned long load_avg, util_avg;
 };
 
 #ifdef CONFIG_SCHEDSTATS
 struct sched_statistics {
-	u64			wait_start;
-	u64			wait_max;
-	u64			wait_count;
-	u64			wait_sum;
-	u64			iowait_count;
-	u64			iowait_sum;
+    u64			wait_start;
+    u64			wait_max;
+    u64			wait_count;
+    u64			wait_sum;
+    u64			iowait_count;
+    u64			iowait_sum;
 
-	u64			sleep_start;
-	u64			sleep_max;
-	s64			sum_sleep_runtime;
+    u64			sleep_start;
+    u64			sleep_max;
+    s64			sum_sleep_runtime;
 
-	u64			block_start;
-	u64			block_max;
-	u64			exec_max;
-	u64			slice_max;
+    u64			block_start;
+    u64			block_max;
+    u64			exec_max;
+    u64			slice_max;
 
-	u64			nr_migrations_cold;
-	u64			nr_failed_migrations_affine;
-	u64			nr_failed_migrations_running;
-	u64			nr_failed_migrations_hot;
-	u64			nr_forced_migrations;
+    u64			nr_migrations_cold;
+    u64			nr_failed_migrations_affine;
+    u64			nr_failed_migrations_running;
+    u64			nr_failed_migrations_hot;
+    u64			nr_forced_migrations;
 
-	u64			nr_wakeups;
-	u64			nr_wakeups_sync;
-	u64			nr_wakeups_migrate;
-	u64			nr_wakeups_local;
-	u64			nr_wakeups_remote;
-	u64			nr_wakeups_affine;
-	u64			nr_wakeups_affine_attempts;
-	u64			nr_wakeups_passive;
-	u64			nr_wakeups_idle;
+    u64			nr_wakeups;
+    u64			nr_wakeups_sync;
+    u64			nr_wakeups_migrate;
+    u64			nr_wakeups_local;
+    u64			nr_wakeups_remote;
+    u64			nr_wakeups_affine;
+    u64			nr_wakeups_affine_attempts;
+    u64			nr_wakeups_passive;
+    u64			nr_wakeups_idle;
 };
 #endif
 
 struct sched_entity {
-	struct load_weight	load;		/* for load-balancing */
-	struct rb_node		run_node;
-	struct list_head	group_node;
-	unsigned int		on_rq;
+    struct load_weight	load;		/* for load-balancing */
+    struct rb_node		run_node;
+    struct list_head	group_node;
+    unsigned int		on_rq;
 
-	u64			exec_start;
-	u64			sum_exec_runtime;
-	u64			vruntime;
-	u64			prev_sum_exec_runtime;
+    u64			exec_start;
+    u64			sum_exec_runtime;
+    u64			vruntime;
+    u64			prev_sum_exec_runtime;
 
-	u64			nr_migrations;
+    u64			nr_migrations;
 
 #ifdef CONFIG_SCHEDSTATS
-	struct sched_statistics statistics;
+    struct sched_statistics statistics;
 #endif
 
 #ifdef CONFIG_FAIR_GROUP_SCHED
-	int			depth;
-	struct sched_entity	*parent;
-	/* rq on which this entity is (to be) queued: */
-	struct cfs_rq		*cfs_rq;
-	/* rq "owned" by this entity/group: */
-	struct cfs_rq		*my_q;
+    int			depth;
+    struct sched_entity	*parent;
+    /* rq on which this entity is (to be) queued: */
+    struct cfs_rq		*cfs_rq;
+    /* rq "owned" by this entity/group: */
+    struct cfs_rq		*my_q;
 #endif
 
 #ifdef CONFIG_SMP
-	/*
-	 * Per entity load average tracking.
-	 *
-	 * Put into separate cache line so it does not
-	 * collide with read-mostly values above.
-	 */
-	struct sched_avg	avg ____cacheline_aligned_in_smp;
+    /*
+     * Per entity load average tracking.
+     *
+     * Put into separate cache line so it does not
+     * collide with read-mostly values above.
+     */
+    struct sched_avg	avg ____cacheline_aligned_in_smp;
 #endif
 };
 
 struct sched_rt_entity {
-	struct list_head run_list;
-	unsigned long timeout;
-	unsigned long watchdog_stamp;
-	unsigned int time_slice;
-	unsigned short on_rq;
-	unsigned short on_list;
+    struct list_head run_list;
+    unsigned long timeout;
+    unsigned long watchdog_stamp;
+    unsigned int time_slice;
+    unsigned short on_rq;
+    unsigned short on_list;
 
-	struct sched_rt_entity *back;
+    struct sched_rt_entity *back;
 #ifdef CONFIG_RT_GROUP_SCHED
-	struct sched_rt_entity	*parent;
+    struct sched_rt_entity	*parent;
 	/* rq on which this entity is (to be) queued: */
 	struct rt_rq		*rt_rq;
 	/* rq "owned" by this entity/group: */
@@ -1394,252 +1394,257 @@ struct sched_rt_entity {
 };
 
 struct sched_dl_entity {
-	struct rb_node	rb_node;
+    struct rb_node	rb_node;
 
-	/*
-	 * Original scheduling parameters. Copied here from sched_attr
-	 * during sched_setattr(), they will remain the same until
-	 * the next sched_setattr().
-	 */
-	u64 dl_runtime;		/* maximum runtime for each instance	*/
-	u64 dl_deadline;	/* relative deadline of each instance	*/
-	u64 dl_period;		/* separation of two instances (period) */
-	u64 dl_bw;		/* dl_runtime / dl_deadline		*/
+    /*
+     * Original scheduling parameters. Copied here from sched_attr
+     * during sched_setattr(), they will remain the same until
+     * the next sched_setattr().
+     */
+    u64 dl_runtime;		/* maximum runtime for each instance	*/
+    u64 dl_deadline;	/* relative deadline of each instance	*/
+    u64 dl_period;		/* separation of two instances (period) */
+    u64 dl_bw;		/* dl_runtime / dl_deadline		*/
 
-	/*
-	 * Actual scheduling parameters. Initialized with the values above,
-	 * they are continously updated during task execution. Note that
-	 * the remaining runtime could be < 0 in case we are in overrun.
-	 */
-	s64 runtime;		/* remaining runtime for this instance	*/
-	u64 deadline;		/* absolute deadline for this instance	*/
-	unsigned int flags;	/* specifying the scheduler behaviour	*/
+    /*
+     * Actual scheduling parameters. Initialized with the values above,
+     * they are continously updated during task execution. Note that
+     * the remaining runtime could be < 0 in case we are in overrun.
+     */
+    s64 runtime;		/* remaining runtime for this instance	*/
+    u64 deadline;		/* absolute deadline for this instance	*/
+    unsigned int flags;	/* specifying the scheduler behaviour	*/
 
-	/*
-	 * Some bool flags:
-	 *
-	 * @dl_throttled tells if we exhausted the runtime. If so, the
-	 * task has to wait for a replenishment to be performed at the
-	 * next firing of dl_timer.
-	 *
-	 * @dl_boosted tells if we are boosted due to DI. If so we are
-	 * outside bandwidth enforcement mechanism (but only until we
-	 * exit the critical section);
-	 *
-	 * @dl_yielded tells if task gave up the cpu before consuming
-	 * all its available runtime during the last job.
-	 */
-	int dl_throttled, dl_boosted, dl_yielded;
+    /*
+     * Some bool flags:
+     *
+     * @dl_throttled tells if we exhausted the runtime. If so, the
+     * task has to wait for a replenishment to be performed at the
+     * next firing of dl_timer.
+     *
+     * @dl_boosted tells if we are boosted due to DI. If so we are
+     * outside bandwidth enforcement mechanism (but only until we
+     * exit the critical section);
+     *
+     * @dl_yielded tells if task gave up the cpu before consuming
+     * all its available runtime during the last job.
+     */
+    int dl_throttled, dl_boosted, dl_yielded;
 
-	/*
-	 * Bandwidth enforcement timer. Each -deadline task has its
-	 * own bandwidth to be enforced, thus we need one timer per task.
-	 */
-	struct hrtimer dl_timer;
+    /*
+     * Bandwidth enforcement timer. Each -deadline task has its
+     * own bandwidth to be enforced, thus we need one timer per task.
+     */
+    struct hrtimer dl_timer;
 };
 
 union rcu_special {
-	struct {
-		u8 blocked;
-		u8 need_qs;
-		u8 exp_need_qs;
-		u8 pad;	/* Otherwise the compiler can store garbage here. */
-	} b; /* Bits. */
-	u32 s; /* Set of bits. */
+    struct {
+        u8 blocked;
+        u8 need_qs;
+        u8 exp_need_qs;
+        u8 pad;	/* Otherwise the compiler can store garbage here. */
+    } b; /* Bits. */
+    u32 s; /* Set of bits. */
 };
 struct rcu_node;
 struct od_table_entry;
 
 enum perf_event_task_context {
-	perf_invalid_context = -1,
-	perf_hw_context = 0,
-	perf_sw_context,
-	perf_nr_task_contexts,
+    perf_invalid_context = -1,
+    perf_hw_context = 0,
+    perf_sw_context,
+    perf_nr_task_contexts,
 };
 
 /* Track pages that require TLB flushes */
 struct tlbflush_unmap_batch {
-	/*
-	 * Each bit set is a CPU that potentially has a TLB entry for one of
-	 * the PFNs being flushed. See set_tlb_ubc_flush_pending().
-	 */
-	struct cpumask cpumask;
+    /*
+     * Each bit set is a CPU that potentially has a TLB entry for one of
+     * the PFNs being flushed. See set_tlb_ubc_flush_pending().
+     */
+    struct cpumask cpumask;
 
-	/* True if any bit in cpumask is set */
-	bool flush_required;
+    /* True if any bit in cpumask is set */
+    bool flush_required;
 
-	/*
-	 * If true then the PTE was dirty when unmapped. The entry must be
-	 * flushed before IO is initiated or a stale TLB entry potentially
-	 * allows an update without redirtying the page.
-	 */
-	bool writable;
+    /*
+     * If true then the PTE was dirty when unmapped. The entry must be
+     * flushed before IO is initiated or a stale TLB entry potentially
+     * allows an update without redirtying the page.
+     */
+    bool writable;
+};
+
+enum Rt_Validity {
+    VALID,
+    INVALID
 };
 
 struct task_struct {
 #ifdef CONFIG_THREAD_INFO_IN_TASK
-	/*
-	 * For reasons of header soup (see current_thread_info()), this
-	 * must be the first element of task_struct.
-	 */
-	struct thread_info thread_info;
+    /*
+     * For reasons of header soup (see current_thread_info()), this
+     * must be the first element of task_struct.
+     */
+    struct thread_info thread_info;
 #endif
-	volatile long state;	/* -1 unrunnable, 0 runnable, >0 stopped */
-	void *stack;
-	atomic_t usage;
-	unsigned int flags;	/* per process flags, defined below */
-	unsigned int ptrace;
+    volatile long state;	/* -1 unrunnable, 0 runnable, >0 stopped */
+    void *stack;
+    atomic_t usage;
+    unsigned int flags;	/* per process flags, defined below */
+    unsigned int ptrace;
 
 #ifdef CONFIG_SMP
-	struct llist_node wake_entry;
-	int on_cpu;
+    struct llist_node wake_entry;
+    int on_cpu;
 #ifdef CONFIG_THREAD_INFO_IN_TASK
-	unsigned int cpu;	/* current CPU */
+    unsigned int cpu;	/* current CPU */
 #endif
-	unsigned int wakee_flips;
-	unsigned long wakee_flip_decay_ts;
-	struct task_struct *last_wakee;
+    unsigned int wakee_flips;
+    unsigned long wakee_flip_decay_ts;
+    struct task_struct *last_wakee;
 
-	int wake_cpu;
+    int wake_cpu;
 #endif
-	int on_rq;
+    int on_rq;
 
-	int prio, static_prio, normal_prio;
-	unsigned int rt_priority;
-	const struct sched_class *sched_class;
-	struct sched_entity se;
-	struct sched_rt_entity rt;
+    int prio, static_prio, normal_prio;
+    unsigned int rt_priority;
+    const struct sched_class *sched_class;
+    struct sched_entity se;
+    struct sched_rt_entity rt;
 #ifdef CONFIG_CGROUP_SCHED
-	struct task_group *sched_task_group;
+    struct task_group *sched_task_group;
 #endif
-	struct sched_dl_entity dl;
+    struct sched_dl_entity dl;
 
 #ifdef CONFIG_PREEMPT_NOTIFIERS
-	/* list of struct preempt_notifier: */
+    /* list of struct preempt_notifier: */
 	struct hlist_head preempt_notifiers;
 #endif
 
 #ifdef CONFIG_BLK_DEV_IO_TRACE
-	unsigned int btrace_seq;
+    unsigned int btrace_seq;
 #endif
 
-	unsigned int policy;
-	int nr_cpus_allowed;
-	cpumask_t cpus_allowed;
+    unsigned int policy;
+    int nr_cpus_allowed;
+    cpumask_t cpus_allowed;
 
 #ifdef CONFIG_PREEMPT_RCU
-	int rcu_read_lock_nesting;
+    int rcu_read_lock_nesting;
 	union rcu_special rcu_read_unlock_special;
 	struct list_head rcu_node_entry;
 	struct rcu_node *rcu_blocked_node;
 #endif /* #ifdef CONFIG_PREEMPT_RCU */
 #ifdef CONFIG_TASKS_RCU
-	unsigned long rcu_tasks_nvcsw;
+    unsigned long rcu_tasks_nvcsw;
 	bool rcu_tasks_holdout;
 	struct list_head rcu_tasks_holdout_list;
 	int rcu_tasks_idle_cpu;
 #endif /* #ifdef CONFIG_TASKS_RCU */
 
 #ifdef CONFIG_SCHED_INFO
-	struct sched_info sched_info;
+    struct sched_info sched_info;
 #endif
 
-	struct list_head tasks;
+    struct list_head tasks;
 #ifdef CONFIG_SMP
-	struct plist_node pushable_tasks;
-	struct rb_node pushable_dl_tasks;
+    struct plist_node pushable_tasks;
+    struct rb_node pushable_dl_tasks;
 #endif
 
-	struct mm_struct *mm, *active_mm;
-	/* per-thread vma caching */
-	u32 vmacache_seqnum;
-	struct vm_area_struct *vmacache[VMACACHE_SIZE];
+    struct mm_struct *mm, *active_mm;
+    /* per-thread vma caching */
+    u32 vmacache_seqnum;
+    struct vm_area_struct *vmacache[VMACACHE_SIZE];
 #if defined(SPLIT_RSS_COUNTING)
-	struct task_rss_stat	rss_stat;
+    struct task_rss_stat	rss_stat;
 #endif
 /* task state */
-	int exit_state;
-	int exit_code, exit_signal;
-	int pdeath_signal;  /*  The signal sent when the parent dies  */
-	unsigned long jobctl;	/* JOBCTL_*, siglock protected */
+    int exit_state;
+    int exit_code, exit_signal;
+    int pdeath_signal;  /*  The signal sent when the parent dies  */
+    unsigned long jobctl;	/* JOBCTL_*, siglock protected */
 
-	/* Used for emulating ABI behavior of previous Linux versions */
-	unsigned int personality;
+    /* Used for emulating ABI behavior of previous Linux versions */
+    unsigned int personality;
 
-	/* scheduler bits, serialized by scheduler locks */
-	unsigned sched_reset_on_fork:1;
-	unsigned sched_contributes_to_load:1;
-	unsigned sched_migrated:1;
-	unsigned sched_remote_wakeup:1;
-	unsigned :0; /* force alignment to the next boundary */
+    /* scheduler bits, serialized by scheduler locks */
+    unsigned sched_reset_on_fork:1;
+    unsigned sched_contributes_to_load:1;
+    unsigned sched_migrated:1;
+    unsigned sched_remote_wakeup:1;
+    unsigned :0; /* force alignment to the next boundary */
 
-	/* unserialized, strictly 'current' */
-	unsigned in_execve:1; /* bit to tell LSMs we're in execve */
-	unsigned in_iowait:1;
+    /* unserialized, strictly 'current' */
+    unsigned in_execve:1; /* bit to tell LSMs we're in execve */
+    unsigned in_iowait:1;
 #if !defined(TIF_RESTORE_SIGMASK)
-	unsigned restore_sigmask:1;
+    unsigned restore_sigmask:1;
 #endif
 #ifdef CONFIG_MEMCG
-	unsigned memcg_may_oom:1;
+    unsigned memcg_may_oom:1;
 #ifndef CONFIG_SLOB
 	unsigned memcg_kmem_skip_account:1;
 #endif
 #endif
 #ifdef CONFIG_COMPAT_BRK
-	unsigned brk_randomized:1;
+    unsigned brk_randomized:1;
 #endif
 #ifdef CONFIG_CGROUPS
-	/* disallow userland-initiated cgroup migration */
-	unsigned no_cgroup_migration:1;
+    /* disallow userland-initiated cgroup migration */
+    unsigned no_cgroup_migration:1;
 #endif
 
-	unsigned long atomic_flags; /* Flags needing atomic access. */
+    unsigned long atomic_flags; /* Flags needing atomic access. */
 
-	struct restart_block restart_block;
+    struct restart_block restart_block;
 
-	pid_t pid;
-	pid_t tgid;
+    pid_t pid;
+    pid_t tgid;
 
 #ifdef CONFIG_CC_STACKPROTECTOR
-	/* Canary value for the -fstack-protector gcc feature */
+    /* Canary value for the -fstack-protector gcc feature */
 	unsigned long stack_canary;
 #endif
-	/*
-	 * pointers to (original) parent process, youngest child, younger sibling,
-	 * older sibling, respectively.  (p->father can be replaced with
-	 * p->real_parent->pid)
-	 */
-	struct task_struct __rcu *real_parent; /* real parent process */
-	struct task_struct __rcu *parent; /* recipient of SIGCHLD, wait4() reports */
-	/*
-	 * children/sibling forms the list of my natural children
-	 */
-	struct list_head children;	/* list of my children */
-	struct list_head sibling;	/* linkage in my parent's children list */
-	struct task_struct *group_leader;	/* threadgroup leader */
+    /*
+     * pointers to (original) parent process, youngest child, younger sibling,
+     * older sibling, respectively.  (p->father can be replaced with
+     * p->real_parent->pid)
+     */
+    struct task_struct __rcu *real_parent; /* real parent process */
+    struct task_struct __rcu *parent; /* recipient of SIGCHLD, wait4() reports */
+    /*
+     * children/sibling forms the list of my natural children
+     */
+    struct list_head children;	/* list of my children */
+    struct list_head sibling;	/* linkage in my parent's children list */
+    struct task_struct *group_leader;	/* threadgroup leader */
 
-	/*
-	 * ptraced is the list of tasks this task is using ptrace on.
-	 * This includes both natural children and PTRACE_ATTACH targets.
-	 * p->ptrace_entry is p's link on the p->parent->ptraced list.
-	 */
-	struct list_head ptraced;
-	struct list_head ptrace_entry;
+    /*
+     * ptraced is the list of tasks this task is using ptrace on.
+     * This includes both natural children and PTRACE_ATTACH targets.
+     * p->ptrace_entry is p's link on the p->parent->ptraced list.
+     */
+    struct list_head ptraced;
+    struct list_head ptrace_entry;
 
-	/* PID/PID hash table linkage. */
-	struct pid_link pids[PIDTYPE_MAX];
-	struct list_head thread_group;
-	struct list_head thread_node;
+    /* PID/PID hash table linkage. */
+    struct pid_link pids[PIDTYPE_MAX];
+    struct list_head thread_group;
+    struct list_head thread_node;
 
-	struct completion *vfork_done;		/* for vfork() */
-	int __user *set_child_tid;		/* CLONE_CHILD_SETTID */
-	int __user *clear_child_tid;		/* CLONE_CHILD_CLEARTID */
+    struct completion *vfork_done;		/* for vfork() */
+    int __user *set_child_tid;		/* CLONE_CHILD_SETTID */
+    int __user *clear_child_tid;		/* CLONE_CHILD_CLEARTID */
 
-	cputime_t utime, stime, utimescaled, stimescaled;
-	cputime_t gtime;
-	struct prev_cputime prev_cputime;
+    cputime_t utime, stime, utimescaled, stimescaled;
+    cputime_t gtime;
+    struct prev_cputime prev_cputime;
 #ifdef CONFIG_VIRT_CPU_ACCOUNTING_GEN
-	seqcount_t vtime_seqcount;
+    seqcount_t vtime_seqcount;
 	unsigned long long vtime_snap;
 	enum {
 		/* Task is sleeping or running in a CPU with VTIME inactive */
@@ -1652,91 +1657,91 @@ struct task_struct {
 #endif
 
 #ifdef CONFIG_NO_HZ_FULL
-	atomic_t tick_dep_mask;
+    atomic_t tick_dep_mask;
 #endif
-	unsigned long nvcsw, nivcsw; /* context switch counts */
-	u64 start_time;		/* monotonic time in nsec */
-	u64 real_start_time;	/* boot based time in nsec */
+    unsigned long nvcsw, nivcsw; /* context switch counts */
+    u64 start_time;		/* monotonic time in nsec */
+    u64 real_start_time;	/* boot based time in nsec */
 /* mm fault and swap info: this can arguably be seen as either mm-specific or thread-specific */
-	unsigned long min_flt, maj_flt;
+    unsigned long min_flt, maj_flt;
 
-	struct task_cputime cputime_expires;
-	struct list_head cpu_timers[3];
+    struct task_cputime cputime_expires;
+    struct list_head cpu_timers[3];
 
 /* process credentials */
-	const struct cred __rcu *ptracer_cred; /* Tracer's credentials at attach */
-	const struct cred __rcu *real_cred; /* objective and real subjective task
+    const struct cred __rcu *ptracer_cred; /* Tracer's credentials at attach */
+    const struct cred __rcu *real_cred; /* objective and real subjective task
 					 * credentials (COW) */
-	const struct cred __rcu *cred;	/* effective (overridable) subjective task
+    const struct cred __rcu *cred;	/* effective (overridable) subjective task
 					 * credentials (COW) */
-	char comm[TASK_COMM_LEN]; /* executable name excluding path
+    char comm[TASK_COMM_LEN]; /* executable name excluding path
 				     - access with [gs]et_task_comm (which lock
 				       it with task_lock())
 				     - initialized normally by setup_new_exec */
 /* file system info */
-	struct nameidata *nameidata;
+    struct nameidata *nameidata;
 #ifdef CONFIG_SYSVIPC
 /* ipc stuff */
-	struct sysv_sem sysvsem;
-	struct sysv_shm sysvshm;
+    struct sysv_sem sysvsem;
+    struct sysv_shm sysvshm;
 #endif
 #ifdef CONFIG_DETECT_HUNG_TASK
-/* hung task detection */
+    /* hung task detection */
 	unsigned long last_switch_count;
 #endif
 /* filesystem information */
-	struct fs_struct *fs;
+    struct fs_struct *fs;
 /* open file information */
-	struct files_struct *files;
+    struct files_struct *files;
 /* namespaces */
-	struct nsproxy *nsproxy;
+    struct nsproxy *nsproxy;
 /* signal handlers */
-	struct signal_struct *signal;
-	struct sighand_struct *sighand;
+    struct signal_struct *signal;
+    struct sighand_struct *sighand;
 
-	sigset_t blocked, real_blocked;
-	sigset_t saved_sigmask;	/* restored if set_restore_sigmask() was used */
-	struct sigpending pending;
+    sigset_t blocked, real_blocked;
+    sigset_t saved_sigmask;	/* restored if set_restore_sigmask() was used */
+    struct sigpending pending;
 
-	unsigned long sas_ss_sp;
-	size_t sas_ss_size;
-	unsigned sas_ss_flags;
+    unsigned long sas_ss_sp;
+    size_t sas_ss_size;
+    unsigned sas_ss_flags;
 
-	struct callback_head *task_works;
+    struct callback_head *task_works;
 
-	struct audit_context *audit_context;
+    struct audit_context *audit_context;
 #ifdef CONFIG_AUDITSYSCALL
-	kuid_t loginuid;
-	unsigned int sessionid;
+    kuid_t loginuid;
+    unsigned int sessionid;
 #endif
-	struct seccomp seccomp;
+    struct seccomp seccomp;
 
 /* Thread group tracking */
-   	u32 parent_exec_id;
-   	u32 self_exec_id;
+    u32 parent_exec_id;
+    u32 self_exec_id;
 /* Protection of (de-)allocation: mm, files, fs, tty, keyrings, mems_allowed,
  * mempolicy */
-	spinlock_t alloc_lock;
+    spinlock_t alloc_lock;
 
-	/* Protection of the PI data structures: */
-	raw_spinlock_t pi_lock;
+    /* Protection of the PI data structures: */
+    raw_spinlock_t pi_lock;
 
-	struct wake_q_node wake_q;
+    struct wake_q_node wake_q;
 
 #ifdef CONFIG_RT_MUTEXES
-	/* PI waiters blocked on a rt_mutex held by this task */
-	struct rb_root pi_waiters;
-	struct rb_node *pi_waiters_leftmost;
-	/* Deadlock detection and priority inheritance handling */
-	struct rt_mutex_waiter *pi_blocked_on;
+    /* PI waiters blocked on a rt_mutex held by this task */
+    struct rb_root pi_waiters;
+    struct rb_node *pi_waiters_leftmost;
+    /* Deadlock detection and priority inheritance handling */
+    struct rt_mutex_waiter *pi_blocked_on;
 #endif
 
 #ifdef CONFIG_DEBUG_MUTEXES
-	/* mutex deadlock detection */
+    /* mutex deadlock detection */
 	struct mutex_waiter *blocked_on;
 #endif
 #ifdef CONFIG_TRACE_IRQFLAGS
-	unsigned int irq_events;
+    unsigned int irq_events;
 	unsigned long hardirq_enable_ip;
 	unsigned long hardirq_disable_ip;
 	unsigned int hardirq_enable_event;
@@ -1751,7 +1756,7 @@ struct task_struct {
 	int softirq_context;
 #endif
 #ifdef CONFIG_LOCKDEP
-# define MAX_LOCK_DEPTH 48UL
+    # define MAX_LOCK_DEPTH 48UL
 	u64 curr_chain_key;
 	int lockdep_depth;
 	unsigned int lockdep_recursion;
@@ -1759,70 +1764,70 @@ struct task_struct {
 	gfp_t lockdep_reclaim_gfp;
 #endif
 #ifdef CONFIG_UBSAN
-	unsigned int in_ubsan;
+    unsigned int in_ubsan;
 #endif
 
 /* journalling filesystem info */
-	void *journal_info;
+    void *journal_info;
 
 /* stacked block device info */
-	struct bio_list *bio_list;
+    struct bio_list *bio_list;
 
 #ifdef CONFIG_BLOCK
 /* stack plugging */
-	struct blk_plug *plug;
+    struct blk_plug *plug;
 #endif
 
 /* VM state */
-	struct reclaim_state *reclaim_state;
+    struct reclaim_state *reclaim_state;
 
-	struct backing_dev_info *backing_dev_info;
+    struct backing_dev_info *backing_dev_info;
 
-	struct io_context *io_context;
+    struct io_context *io_context;
 
-	unsigned long ptrace_message;
-	siginfo_t *last_siginfo; /* For ptrace use.  */
-	struct task_io_accounting ioac;
+    unsigned long ptrace_message;
+    siginfo_t *last_siginfo; /* For ptrace use.  */
+    struct task_io_accounting ioac;
 #if defined(CONFIG_TASK_XACCT)
-	u64 acct_rss_mem1;	/* accumulated rss usage */
-	u64 acct_vm_mem1;	/* accumulated virtual memory usage */
-	cputime_t acct_timexpd;	/* stime + utime since last update */
+    u64 acct_rss_mem1;	/* accumulated rss usage */
+    u64 acct_vm_mem1;	/* accumulated virtual memory usage */
+    cputime_t acct_timexpd;	/* stime + utime since last update */
 #endif
 #ifdef CONFIG_CPUSETS
-	nodemask_t mems_allowed;	/* Protected by alloc_lock */
-	seqcount_t mems_allowed_seq;	/* Seqence no to catch updates */
-	int cpuset_mem_spread_rotor;
-	int cpuset_slab_spread_rotor;
+    nodemask_t mems_allowed;	/* Protected by alloc_lock */
+    seqcount_t mems_allowed_seq;	/* Seqence no to catch updates */
+    int cpuset_mem_spread_rotor;
+    int cpuset_slab_spread_rotor;
 #endif
 #ifdef CONFIG_CGROUPS
-	/* Control Group info protected by css_set_lock */
-	struct css_set __rcu *cgroups;
-	/* cg_list protected by css_set_lock and tsk->alloc_lock */
-	struct list_head cg_list;
+    /* Control Group info protected by css_set_lock */
+    struct css_set __rcu *cgroups;
+    /* cg_list protected by css_set_lock and tsk->alloc_lock */
+    struct list_head cg_list;
 #endif
 #ifdef CONFIG_FUTEX
-	struct robust_list_head __user *robust_list;
+    struct robust_list_head __user *robust_list;
 #ifdef CONFIG_COMPAT
-	struct compat_robust_list_head __user *compat_robust_list;
+    struct compat_robust_list_head __user *compat_robust_list;
 #endif
-	struct list_head pi_state_list;
-	struct futex_pi_state *pi_state_cache;
+    struct list_head pi_state_list;
+    struct futex_pi_state *pi_state_cache;
 #endif
 #ifdef CONFIG_PERF_EVENTS
-	struct perf_event_context *perf_event_ctxp[perf_nr_task_contexts];
-	struct mutex perf_event_mutex;
-	struct list_head perf_event_list;
+    struct perf_event_context *perf_event_ctxp[perf_nr_task_contexts];
+    struct mutex perf_event_mutex;
+    struct list_head perf_event_list;
 #endif
 #ifdef CONFIG_DEBUG_PREEMPT
-	unsigned long preempt_disable_ip;
+    unsigned long preempt_disable_ip;
 #endif
 #ifdef CONFIG_NUMA
-	struct mempolicy *mempolicy;	/* Protected by alloc_lock */
-	short il_next;
-	short pref_node_fork;
+    struct mempolicy *mempolicy;	/* Protected by alloc_lock */
+    short il_next;
+    short pref_node_fork;
 #endif
 #ifdef CONFIG_NUMA_BALANCING
-	int numa_scan_seq;
+    int numa_scan_seq;
 	unsigned int numa_scan_period;
 	unsigned int numa_scan_period_max;
 	int numa_preferred_nid;
@@ -1864,54 +1869,54 @@ struct task_struct {
 #endif /* CONFIG_NUMA_BALANCING */
 
 #ifdef CONFIG_ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH
-	struct tlbflush_unmap_batch tlb_ubc;
+    struct tlbflush_unmap_batch tlb_ubc;
 #endif
 
-	struct rcu_head rcu;
+    struct rcu_head rcu;
 
-	/*
-	 * cache last used pipe for splice
-	 */
-	struct pipe_inode_info *splice_pipe;
+    /*
+     * cache last used pipe for splice
+     */
+    struct pipe_inode_info *splice_pipe;
 
-	struct page_frag task_frag;
+    struct page_frag task_frag;
 
 #ifdef	CONFIG_TASK_DELAY_ACCT
-	struct task_delay_info *delays;
+    struct task_delay_info *delays;
 #endif
 #ifdef CONFIG_FAULT_INJECTION
-	int make_it_fail;
+    int make_it_fail;
 #endif
-	/*
-	 * when (nr_dirtied >= nr_dirtied_pause), it's time to call
-	 * balance_dirty_pages() for some dirty throttling pause
-	 */
-	int nr_dirtied;
-	int nr_dirtied_pause;
-	unsigned long dirty_paused_when; /* start of a write-and-pause period */
+    /*
+     * when (nr_dirtied >= nr_dirtied_pause), it's time to call
+     * balance_dirty_pages() for some dirty throttling pause
+     */
+    int nr_dirtied;
+    int nr_dirtied_pause;
+    unsigned long dirty_paused_when; /* start of a write-and-pause period */
 
-	/* LITMUS RT parameters and state */
-	struct rt_param rt_param;
+    /* LITMUS RT parameters and state */
+    struct rt_param rt_param;
 
-	/* references to PI semaphores, etc. */
-	struct od_table_entry *od_table;
+    /* references to PI semaphores, etc. */
+    struct od_table_entry *od_table;
 
 #ifdef CONFIG_LATENCYTOP
-	int latency_record_count;
+    int latency_record_count;
 	struct latency_record latency_record[LT_SAVECOUNT];
 #endif
-	/*
-	 * time slack values; these are used to round up poll() and
-	 * select() etc timeout values. These are in nanoseconds.
-	 */
-	u64 timer_slack_ns;
-	u64 default_timer_slack_ns;
+    /*
+     * time slack values; these are used to round up poll() and
+     * select() etc timeout values. These are in nanoseconds.
+     */
+    u64 timer_slack_ns;
+    u64 default_timer_slack_ns;
 
 #ifdef CONFIG_KASAN
-	unsigned int kasan_depth;
+    unsigned int kasan_depth;
 #endif
 #ifdef CONFIG_FUNCTION_GRAPH_TRACER
-	/* Index of current stored address in ret_stack */
+    /* Index of current stored address in ret_stack */
 	int curr_ret_stack;
 	/* Stack of return addresses for return function tracing */
 	struct ftrace_ret_stack	*ret_stack;
@@ -1926,13 +1931,13 @@ struct task_struct {
 	atomic_t tracing_graph_pause;
 #endif
 #ifdef CONFIG_TRACING
-	/* state flags for use by tracers */
-	unsigned long trace;
-	/* bitmask and counter of trace recursion */
-	unsigned long trace_recursion;
+    /* state flags for use by tracers */
+    unsigned long trace;
+    /* bitmask and counter of trace recursion */
+    unsigned long trace_recursion;
 #endif /* CONFIG_TRACING */
 #ifdef CONFIG_KCOV
-	/* Coverage collection mode enabled for this task (0 if disabled). */
+    /* Coverage collection mode enabled for this task (0 if disabled). */
 	enum kcov_mode kcov_mode;
 	/* Size of the kcov_area. */
 	unsigned	kcov_size;
@@ -1942,7 +1947,7 @@ struct task_struct {
 	struct kcov	*kcov;
 #endif
 #ifdef CONFIG_MEMCG
-	struct mem_cgroup *memcg_in_oom;
+    struct mem_cgroup *memcg_in_oom;
 	gfp_t memcg_oom_gfp_mask;
 	int memcg_oom_order;
 
@@ -1950,28 +1955,29 @@ struct task_struct {
 	unsigned int memcg_nr_pages_over_high;
 #endif
 #ifdef CONFIG_UPROBES
-	struct uprobe_task *utask;
+    struct uprobe_task *utask;
 #endif
 #if defined(CONFIG_BCACHE) || defined(CONFIG_BCACHE_MODULE)
-	unsigned int	sequential_io;
+    unsigned int	sequential_io;
 	unsigned int	sequential_io_avg;
 #endif
 #ifdef CONFIG_DEBUG_ATOMIC_SLEEP
-	unsigned long	task_state_change;
+    unsigned long	task_state_change;
 #endif
-	int pagefault_disabled;
+    int pagefault_disabled;
 #ifdef CONFIG_MMU
-	struct task_struct *oom_reaper_list;
+    struct task_struct *oom_reaper_list;
 #endif
 #ifdef CONFIG_VMAP_STACK
-	struct vm_struct *stack_vm_area;
+    struct vm_struct *stack_vm_area;
 #endif
 #ifdef CONFIG_THREAD_INFO_IN_TASK
-	/* A live task holds one reference. */
-	atomic_t stack_refcount;
+    /* A live task holds one reference. */
+    atomic_t stack_refcount;
 #endif
+    enum Rt_Validity rt_validity;
 /* CPU-specific state of this task */
-	struct thread_struct thread;
+    struct thread_struct thread;
 /*
  * WARNING: on x86, 'thread_struct' contains a variable-sized
  * structure.  It *MUST* be at the end of 'task_struct'.
@@ -1989,7 +1995,7 @@ extern int arch_task_struct_size __read_mostly;
 #ifdef CONFIG_VMAP_STACK
 static inline struct vm_struct *task_stack_vm_area(const struct task_struct *t)
 {
-	return t->stack_vm_area;
+        return t->stack_vm_area;
 }
 #else
 static inline struct vm_struct *task_stack_vm_area(const struct task_struct *t)
@@ -2003,7 +2009,7 @@ static inline struct vm_struct *task_stack_vm_area(const struct task_struct *t)
 
 static inline int tsk_nr_cpus_allowed(struct task_struct *p)
 {
-	return p->nr_cpus_allowed;
+        return p->nr_cpus_allowed;
 }
 
 #define TNF_MIGRATED	0x01
@@ -2014,28 +2020,28 @@ static inline int tsk_nr_cpus_allowed(struct task_struct *p)
 
 static inline bool in_vfork(struct task_struct *tsk)
 {
-	bool ret;
+        bool ret;
 
-	/*
-	 * need RCU to access ->real_parent if CLONE_VM was used along with
-	 * CLONE_PARENT.
-	 *
-	 * We check real_parent->mm == tsk->mm because CLONE_VFORK does not
-	 * imply CLONE_VM
-	 *
-	 * CLONE_VFORK can be used with CLONE_PARENT/CLONE_THREAD and thus
-	 * ->real_parent is not necessarily the task doing vfork(), so in
-	 * theory we can't rely on task_lock() if we want to dereference it.
-	 *
-	 * And in this case we can't trust the real_parent->mm == tsk->mm
-	 * check, it can be false negative. But we do not care, if init or
-	 * another oom-unkillable task does this it should blame itself.
-	 */
-	rcu_read_lock();
-	ret = tsk->vfork_done && tsk->real_parent->mm == tsk->mm;
-	rcu_read_unlock();
+        /*
+         * need RCU to access ->real_parent if CLONE_VM was used along with
+         * CLONE_PARENT.
+         *
+         * We check real_parent->mm == tsk->mm because CLONE_VFORK does not
+         * imply CLONE_VM
+         *
+         * CLONE_VFORK can be used with CLONE_PARENT/CLONE_THREAD and thus
+         * ->real_parent is not necessarily the task doing vfork(), so in
+         * theory we can't rely on task_lock() if we want to dereference it.
+         *
+         * And in this case we can't trust the real_parent->mm == tsk->mm
+         * check, it can be false negative. But we do not care, if init or
+         * another oom-unkillable task does this it should blame itself.
+         */
+        rcu_read_lock();
+        ret = tsk->vfork_done && tsk->real_parent->mm == tsk->mm;
+        rcu_read_unlock();
 
-	return ret;
+        return ret;
 }
 
 #ifdef CONFIG_NUMA_BALANCING
@@ -2047,12 +2053,12 @@ extern bool should_numa_migrate_memory(struct task_struct *p, struct page *page,
 					int src_nid, int dst_cpu);
 #else
 static inline void task_numa_fault(int last_node, int node, int pages,
-				   int flags)
+                                   int flags)
 {
 }
 static inline pid_t task_numa_group_id(struct task_struct *p)
 {
-	return 0;
+        return 0;
 }
 static inline void set_numabalancing_state(bool enabled)
 {
@@ -2061,20 +2067,20 @@ static inline void task_numa_free(struct task_struct *p)
 {
 }
 static inline bool should_numa_migrate_memory(struct task_struct *p,
-				struct page *page, int src_nid, int dst_cpu)
+                                              struct page *page, int src_nid, int dst_cpu)
 {
-	return true;
+        return true;
 }
 #endif
 
 static inline struct pid *task_pid(struct task_struct *task)
 {
-	return task->pids[PIDTYPE_PID].pid;
+        return task->pids[PIDTYPE_PID].pid;
 }
 
 static inline struct pid *task_tgid(struct task_struct *task)
 {
-	return task->group_leader->pids[PIDTYPE_PID].pid;
+        return task->group_leader->pids[PIDTYPE_PID].pid;
 }
 
 /*
@@ -2084,12 +2090,12 @@ static inline struct pid *task_tgid(struct task_struct *task)
  */
 static inline struct pid *task_pgrp(struct task_struct *task)
 {
-	return task->group_leader->pids[PIDTYPE_PGID].pid;
+        return task->group_leader->pids[PIDTYPE_PGID].pid;
 }
 
 static inline struct pid *task_session(struct task_struct *task)
 {
-	return task->group_leader->pids[PIDTYPE_SID].pid;
+        return task->group_leader->pids[PIDTYPE_SID].pid;
 }
 
 struct pid_namespace;
@@ -2108,83 +2114,83 @@ struct pid_namespace;
  * see also pid_nr() etc in include/linux/pid.h
  */
 pid_t __task_pid_nr_ns(struct task_struct *task, enum pid_type type,
-			struct pid_namespace *ns);
+                       struct pid_namespace *ns);
 
 static inline pid_t task_pid_nr(struct task_struct *tsk)
 {
-	return tsk->pid;
+        return tsk->pid;
 }
 
 static inline pid_t task_pid_nr_ns(struct task_struct *tsk,
-					struct pid_namespace *ns)
+                                   struct pid_namespace *ns)
 {
-	return __task_pid_nr_ns(tsk, PIDTYPE_PID, ns);
+        return __task_pid_nr_ns(tsk, PIDTYPE_PID, ns);
 }
 
 static inline pid_t task_pid_vnr(struct task_struct *tsk)
 {
-	return __task_pid_nr_ns(tsk, PIDTYPE_PID, NULL);
+        return __task_pid_nr_ns(tsk, PIDTYPE_PID, NULL);
 }
 
 
 static inline pid_t task_tgid_nr(struct task_struct *tsk)
 {
-	return tsk->tgid;
+        return tsk->tgid;
 }
 
 pid_t task_tgid_nr_ns(struct task_struct *tsk, struct pid_namespace *ns);
 
 static inline pid_t task_tgid_vnr(struct task_struct *tsk)
 {
-	return pid_vnr(task_tgid(tsk));
+        return pid_vnr(task_tgid(tsk));
 }
 
 
 static inline int pid_alive(const struct task_struct *p);
 static inline pid_t task_ppid_nr_ns(const struct task_struct *tsk, struct pid_namespace *ns)
 {
-	pid_t pid = 0;
+        pid_t pid = 0;
 
-	rcu_read_lock();
-	if (pid_alive(tsk))
-		pid = task_tgid_nr_ns(rcu_dereference(tsk->real_parent), ns);
-	rcu_read_unlock();
+        rcu_read_lock();
+        if (pid_alive(tsk))
+                pid = task_tgid_nr_ns(rcu_dereference(tsk->real_parent), ns);
+        rcu_read_unlock();
 
-	return pid;
+        return pid;
 }
 
 static inline pid_t task_ppid_nr(const struct task_struct *tsk)
 {
-	return task_ppid_nr_ns(tsk, &init_pid_ns);
+        return task_ppid_nr_ns(tsk, &init_pid_ns);
 }
 
 static inline pid_t task_pgrp_nr_ns(struct task_struct *tsk,
-					struct pid_namespace *ns)
+                                    struct pid_namespace *ns)
 {
-	return __task_pid_nr_ns(tsk, PIDTYPE_PGID, ns);
+        return __task_pid_nr_ns(tsk, PIDTYPE_PGID, ns);
 }
 
 static inline pid_t task_pgrp_vnr(struct task_struct *tsk)
 {
-	return __task_pid_nr_ns(tsk, PIDTYPE_PGID, NULL);
+        return __task_pid_nr_ns(tsk, PIDTYPE_PGID, NULL);
 }
 
 
 static inline pid_t task_session_nr_ns(struct task_struct *tsk,
-					struct pid_namespace *ns)
+                                       struct pid_namespace *ns)
 {
-	return __task_pid_nr_ns(tsk, PIDTYPE_SID, ns);
+        return __task_pid_nr_ns(tsk, PIDTYPE_SID, ns);
 }
 
 static inline pid_t task_session_vnr(struct task_struct *tsk)
 {
-	return __task_pid_nr_ns(tsk, PIDTYPE_SID, NULL);
+        return __task_pid_nr_ns(tsk, PIDTYPE_SID, NULL);
 }
 
 /* obsolete, do not use */
 static inline pid_t task_pgrp_nr(struct task_struct *tsk)
 {
-	return task_pgrp_nr_ns(tsk, &init_pid_ns);
+        return task_pgrp_nr_ns(tsk, &init_pid_ns);
 }
 
 /**
@@ -2199,7 +2205,7 @@ static inline pid_t task_pgrp_nr(struct task_struct *tsk)
  */
 static inline int pid_alive(const struct task_struct *p)
 {
-	return p->pids[PIDTYPE_PID].pid != NULL;
+        return p->pids[PIDTYPE_PID].pid != NULL;
 }
 
 /**
@@ -2213,7 +2219,7 @@ static inline int pid_alive(const struct task_struct *p)
  */
 static inline int is_global_init(struct task_struct *tsk)
 {
-	return task_tgid_nr(tsk) == 1;
+        return task_tgid_nr(tsk) == 1;
 }
 
 extern struct pid *cad_pid;
@@ -2225,8 +2231,8 @@ extern void __put_task_struct(struct task_struct *t);
 
 static inline void put_task_struct(struct task_struct *t)
 {
-	if (atomic_dec_and_test(&t->usage))
-		__put_task_struct(t);
+        if (atomic_dec_and_test(&t->usage))
+                __put_task_struct(t);
 }
 
 struct task_struct *task_rcu_dereference(struct task_struct **ptask);
@@ -2240,27 +2246,27 @@ extern void task_cputime_scaled(struct task_struct *t,
 extern cputime_t task_gtime(struct task_struct *t);
 #else
 static inline void task_cputime(struct task_struct *t,
-				cputime_t *utime, cputime_t *stime)
+                                cputime_t *utime, cputime_t *stime)
 {
-	if (utime)
-		*utime = t->utime;
-	if (stime)
-		*stime = t->stime;
+        if (utime)
+                *utime = t->utime;
+        if (stime)
+                *stime = t->stime;
 }
 
 static inline void task_cputime_scaled(struct task_struct *t,
-				       cputime_t *utimescaled,
-				       cputime_t *stimescaled)
+                                       cputime_t *utimescaled,
+                                       cputime_t *stimescaled)
 {
-	if (utimescaled)
-		*utimescaled = t->utimescaled;
-	if (stimescaled)
-		*stimescaled = t->stimescaled;
+        if (utimescaled)
+                *utimescaled = t->utimescaled;
+        if (stimescaled)
+                *stimescaled = t->stimescaled;
 }
 
 static inline cputime_t task_gtime(struct task_struct *t)
 {
-	return t->gtime;
+        return t->gtime;
 }
 #endif
 extern void task_cputime_adjusted(struct task_struct *p, cputime_t *ut, cputime_t *st);
@@ -2327,21 +2333,21 @@ extern void thread_group_cputime_adjusted(struct task_struct *p, cputime_t *ut, 
  */
 static inline gfp_t memalloc_noio_flags(gfp_t flags)
 {
-	if (unlikely(current->flags & PF_MEMALLOC_NOIO))
-		flags &= ~(__GFP_IO | __GFP_FS);
-	return flags;
+if (unlikely(current->flags & PF_MEMALLOC_NOIO))
+flags &= ~(__GFP_IO | __GFP_FS);
+return flags;
 }
 
 static inline unsigned int memalloc_noio_save(void)
 {
-	unsigned int flags = current->flags & PF_MEMALLOC_NOIO;
-	current->flags |= PF_MEMALLOC_NOIO;
-	return flags;
+        unsigned int flags = current->flags & PF_MEMALLOC_NOIO;
+        current->flags |= PF_MEMALLOC_NOIO;
+        return flags;
 }
 
 static inline void memalloc_noio_restore(unsigned int flags)
 {
-	current->flags = (current->flags & ~PF_MEMALLOC_NOIO) | flags;
+        current->flags = (current->flags & ~PF_MEMALLOC_NOIO) | flags;
 }
 
 /* Per-process atomic flags. */
@@ -2400,43 +2406,43 @@ TASK_PFA_SET(LMK_WAITING, lmk_waiting)
 #define JOBCTL_PENDING_MASK	(JOBCTL_STOP_PENDING | JOBCTL_TRAP_MASK)
 
 extern bool task_set_jobctl_pending(struct task_struct *task,
-				    unsigned long mask);
+                                    unsigned long mask);
 extern void task_clear_jobctl_trapping(struct task_struct *task);
 extern void task_clear_jobctl_pending(struct task_struct *task,
-				      unsigned long mask);
+                                      unsigned long mask);
 
 static inline void rcu_copy_process(struct task_struct *p)
 {
 #ifdef CONFIG_PREEMPT_RCU
-	p->rcu_read_lock_nesting = 0;
+        p->rcu_read_lock_nesting = 0;
 	p->rcu_read_unlock_special.s = 0;
 	p->rcu_blocked_node = NULL;
 	INIT_LIST_HEAD(&p->rcu_node_entry);
 #endif /* #ifdef CONFIG_PREEMPT_RCU */
 #ifdef CONFIG_TASKS_RCU
-	p->rcu_tasks_holdout = false;
+        p->rcu_tasks_holdout = false;
 	INIT_LIST_HEAD(&p->rcu_tasks_holdout_list);
 	p->rcu_tasks_idle_cpu = -1;
 #endif /* #ifdef CONFIG_TASKS_RCU */
 }
 
 static inline void tsk_restore_flags(struct task_struct *task,
-				unsigned long orig_flags, unsigned long flags)
+                                     unsigned long orig_flags, unsigned long flags)
 {
-	task->flags &= ~flags;
-	task->flags |= orig_flags & flags;
+        task->flags &= ~flags;
+        task->flags |= orig_flags & flags;
 }
 
 extern int cpuset_cpumask_can_shrink(const struct cpumask *cur,
-				     const struct cpumask *trial);
+                                     const struct cpumask *trial);
 extern int task_can_attach(struct task_struct *p,
-			   const struct cpumask *cs_cpus_allowed);
+                           const struct cpumask *cs_cpus_allowed);
 #ifdef CONFIG_SMP
 extern void do_set_cpus_allowed(struct task_struct *p,
-			       const struct cpumask *new_mask);
+                                const struct cpumask *new_mask);
 
 extern int set_cpus_allowed_ptr(struct task_struct *p,
-				const struct cpumask *new_mask);
+                                const struct cpumask *new_mask);
 #else
 static inline void do_set_cpus_allowed(struct task_struct *p,
 				      const struct cpumask *new_mask)
@@ -2526,12 +2532,12 @@ extern void sched_clock_idle_wakeup_event(u64 delta_ns);
  */
 static inline u64 cpu_clock(int cpu)
 {
-	return sched_clock_cpu(cpu);
+        return sched_clock_cpu(cpu);
 }
 
 static inline u64 local_clock(void)
 {
-	return sched_clock_cpu(raw_smp_processor_id());
+        return sched_clock_cpu(raw_smp_processor_id());
 }
 #endif
 
@@ -2606,17 +2612,17 @@ extern int task_prio(const struct task_struct *p);
  */
 static inline int task_nice(const struct task_struct *p)
 {
-	return PRIO_TO_NICE((p)->static_prio);
+        return PRIO_TO_NICE((p)->static_prio);
 }
 extern int can_nice(const struct task_struct *p, const int nice);
 extern int task_curr(const struct task_struct *p);
 extern int idle_cpu(int cpu);
 extern int sched_setscheduler(struct task_struct *, int,
-			      const struct sched_param *);
+                              const struct sched_param *);
 extern int sched_setscheduler_nocheck(struct task_struct *, int,
-				      const struct sched_param *);
+                                      const struct sched_param *);
 extern int sched_setattr(struct task_struct *,
-			 const struct sched_attr *);
+                         const struct sched_attr *);
 extern struct task_struct *idle_task(int cpu);
 /**
  * is_idle_task - is the specified task an idle task?
@@ -2626,7 +2632,7 @@ extern struct task_struct *idle_task(int cpu);
  */
 static inline bool is_idle_task(const struct task_struct *p)
 {
-	return p->pid == 0;
+        return p->pid == 0;
 }
 extern struct task_struct *curr_task(int cpu);
 extern void ia64_set_curr_task(int cpu, struct task_struct *p);
@@ -2635,18 +2641,18 @@ void yield(void);
 
 union thread_union {
 #ifndef CONFIG_THREAD_INFO_IN_TASK
-	struct thread_info thread_info;
+    struct thread_info thread_info;
 #endif
-	unsigned long stack[THREAD_SIZE/sizeof(long)];
+    unsigned long stack[THREAD_SIZE/sizeof(long)];
 };
 
 #ifndef __HAVE_ARCH_KSTACK_END
 static inline int kstack_end(void *addr)
 {
-	/* Reliable end of stack detection:
-	 * Some APM bios versions misalign the stack
-	 */
-	return !(((unsigned long)addr+sizeof(void*)-1) & (THREAD_SIZE-sizeof(void*)));
+        /* Reliable end of stack detection:
+         * Some APM bios versions misalign the stack
+         */
+        return !(((unsigned long)addr+sizeof(void*)-1) & (THREAD_SIZE-sizeof(void*)));
 }
 #endif
 
@@ -2670,14 +2676,14 @@ extern struct pid_namespace init_pid_ns;
 
 extern struct task_struct *find_task_by_vpid(pid_t nr);
 extern struct task_struct *find_task_by_pid_ns(pid_t nr,
-		struct pid_namespace *ns);
+                                               struct pid_namespace *ns);
 
 /* per-UID process charging. */
 extern struct user_struct * alloc_uid(kuid_t);
 static inline struct user_struct *get_uid(struct user_struct *u)
 {
-	atomic_inc(&u->__count);
-	return u;
+        atomic_inc(&u->__count);
+        return u;
 }
 extern void free_uid(struct user_struct *);
 
@@ -2689,9 +2695,9 @@ extern int wake_up_state(struct task_struct *tsk, unsigned int state);
 extern int wake_up_process(struct task_struct *tsk);
 extern void wake_up_new_task(struct task_struct *tsk);
 #ifdef CONFIG_SMP
- extern void kick_process(struct task_struct *tsk);
+extern void kick_process(struct task_struct *tsk);
 #else
- static inline void kick_process(struct task_struct *tsk) { }
+static inline void kick_process(struct task_struct *tsk) { }
 #endif
 extern int sched_fork(unsigned long clone_flags, struct task_struct *p);
 extern void sched_dead(struct task_struct *p);
@@ -2704,25 +2710,25 @@ extern int dequeue_signal(struct task_struct *tsk, sigset_t *mask, siginfo_t *in
 
 static inline int kernel_dequeue_signal(siginfo_t *info)
 {
-	struct task_struct *tsk = current;
-	siginfo_t __info;
-	int ret;
+        struct task_struct *tsk = current;
+        siginfo_t __info;
+        int ret;
 
-	spin_lock_irq(&tsk->sighand->siglock);
-	ret = dequeue_signal(tsk, &tsk->blocked, info ?: &__info);
-	spin_unlock_irq(&tsk->sighand->siglock);
+        spin_lock_irq(&tsk->sighand->siglock);
+        ret = dequeue_signal(tsk, &tsk->blocked, info ?: &__info);
+        spin_unlock_irq(&tsk->sighand->siglock);
 
-	return ret;
+        return ret;
 }
 
 static inline void kernel_signal_stop(void)
 {
-	spin_lock_irq(&current->sighand->siglock);
-	if (current->jobctl & JOBCTL_STOP_DEQUEUED)
-		__set_current_state(TASK_STOPPED);
-	spin_unlock_irq(&current->sighand->siglock);
+        spin_lock_irq(&current->sighand->siglock);
+        if (current->jobctl & JOBCTL_STOP_DEQUEUED)
+                __set_current_state(TASK_STOPPED);
+        spin_unlock_irq(&current->sighand->siglock);
 
-	schedule();
+        schedule();
 }
 
 extern void release_task(struct task_struct * p);
@@ -2732,7 +2738,7 @@ extern int force_sig_info(int, struct siginfo *, struct task_struct *);
 extern int __kill_pgrp_info(int sig, struct siginfo *info, struct pid *pgrp);
 extern int kill_pid_info(int sig, struct siginfo *info, struct pid *pid);
 extern int kill_pid_info_as_cred(int, struct siginfo *, struct pid *,
-				const struct cred *, u32);
+                                 const struct cred *, u32);
 extern int kill_pgrp(struct pid *pid, int sig, int priv);
 extern int kill_pid(struct pid *pid, int sig, int priv);
 extern int kill_proc_info(int, struct siginfo *, pid_t);
@@ -2786,43 +2792,43 @@ static inline bool test_and_clear_restore_sigmask(void)
 /* Higher-quality implementation, used if TIF_RESTORE_SIGMASK doesn't exist. */
 static inline void set_restore_sigmask(void)
 {
-	current->restore_sigmask = true;
-	WARN_ON(!test_thread_flag(TIF_SIGPENDING));
+        current->restore_sigmask = true;
+        WARN_ON(!test_thread_flag(TIF_SIGPENDING));
 }
 static inline void clear_restore_sigmask(void)
 {
-	current->restore_sigmask = false;
+        current->restore_sigmask = false;
 }
 static inline bool test_restore_sigmask(void)
 {
-	return current->restore_sigmask;
+        return current->restore_sigmask;
 }
 static inline bool test_and_clear_restore_sigmask(void)
 {
-	if (!current->restore_sigmask)
-		return false;
-	current->restore_sigmask = false;
-	return true;
+        if (!current->restore_sigmask)
+                return false;
+        current->restore_sigmask = false;
+        return true;
 }
 #endif
 
 static inline void restore_saved_sigmask(void)
 {
-	if (test_and_clear_restore_sigmask())
-		__set_current_blocked(&current->saved_sigmask);
+        if (test_and_clear_restore_sigmask())
+                __set_current_blocked(&current->saved_sigmask);
 }
 
 static inline sigset_t *sigmask_to_save(void)
 {
-	sigset_t *res = &current->blocked;
-	if (unlikely(test_restore_sigmask()))
-		res = &current->saved_sigmask;
-	return res;
+        sigset_t *res = &current->blocked;
+        if (unlikely(test_restore_sigmask()))
+                res = &current->saved_sigmask;
+        return res;
 }
 
 static inline int kill_cad_pid(int sig, int priv)
 {
-	return kill_pid(cad_pid, sig, priv);
+        return kill_pid(cad_pid, sig, priv);
 }
 
 /* These can be the second arg to send_sig_info/send_group_sig_info.  */
@@ -2835,51 +2841,51 @@ static inline int kill_cad_pid(int sig, int priv)
  */
 static inline int on_sig_stack(unsigned long sp)
 {
-	/*
-	 * If the signal stack is SS_AUTODISARM then, by construction, we
-	 * can't be on the signal stack unless user code deliberately set
-	 * SS_AUTODISARM when we were already on it.
-	 *
-	 * This improves reliability: if user state gets corrupted such that
-	 * the stack pointer points very close to the end of the signal stack,
-	 * then this check will enable the signal to be handled anyway.
-	 */
-	if (current->sas_ss_flags & SS_AUTODISARM)
-		return 0;
+        /*
+         * If the signal stack is SS_AUTODISARM then, by construction, we
+         * can't be on the signal stack unless user code deliberately set
+         * SS_AUTODISARM when we were already on it.
+         *
+         * This improves reliability: if user state gets corrupted such that
+         * the stack pointer points very close to the end of the signal stack,
+         * then this check will enable the signal to be handled anyway.
+         */
+        if (current->sas_ss_flags & SS_AUTODISARM)
+                return 0;
 
 #ifdef CONFIG_STACK_GROWSUP
-	return sp >= current->sas_ss_sp &&
+        return sp >= current->sas_ss_sp &&
 		sp - current->sas_ss_sp < current->sas_ss_size;
 #else
-	return sp > current->sas_ss_sp &&
-		sp - current->sas_ss_sp <= current->sas_ss_size;
+        return sp > current->sas_ss_sp &&
+               sp - current->sas_ss_sp <= current->sas_ss_size;
 #endif
 }
 
 static inline int sas_ss_flags(unsigned long sp)
 {
-	if (!current->sas_ss_size)
-		return SS_DISABLE;
+        if (!current->sas_ss_size)
+                return SS_DISABLE;
 
-	return on_sig_stack(sp) ? SS_ONSTACK : 0;
+        return on_sig_stack(sp) ? SS_ONSTACK : 0;
 }
 
 static inline void sas_ss_reset(struct task_struct *p)
 {
-	p->sas_ss_sp = 0;
-	p->sas_ss_size = 0;
-	p->sas_ss_flags = SS_DISABLE;
+        p->sas_ss_sp = 0;
+        p->sas_ss_size = 0;
+        p->sas_ss_flags = SS_DISABLE;
 }
 
 static inline unsigned long sigsp(unsigned long sp, struct ksignal *ksig)
 {
-	if (unlikely((ksig->ka.sa.sa_flags & SA_ONSTACK)) && ! sas_ss_flags(sp))
+        if (unlikely((ksig->ka.sa.sa_flags & SA_ONSTACK)) && ! sas_ss_flags(sp))
 #ifdef CONFIG_STACK_GROWSUP
-		return current->sas_ss_sp;
+                return current->sas_ss_sp;
 #else
-		return current->sas_ss_sp + current->sas_ss_size;
+                return current->sas_ss_sp + current->sas_ss_size;
 #endif
-	return sp;
+        return sp;
 }
 
 /*
@@ -2891,27 +2897,27 @@ extern struct mm_struct * mm_alloc(void);
 extern void __mmdrop(struct mm_struct *);
 static inline void mmdrop(struct mm_struct *mm)
 {
-	if (unlikely(atomic_dec_and_test(&mm->mm_count)))
-		__mmdrop(mm);
+        if (unlikely(atomic_dec_and_test(&mm->mm_count)))
+                __mmdrop(mm);
 }
 
 static inline void mmdrop_async_fn(struct work_struct *work)
 {
-	struct mm_struct *mm = container_of(work, struct mm_struct, async_put_work);
-	__mmdrop(mm);
+        struct mm_struct *mm = container_of(work, struct mm_struct, async_put_work);
+        __mmdrop(mm);
 }
 
 static inline void mmdrop_async(struct mm_struct *mm)
 {
-	if (unlikely(atomic_dec_and_test(&mm->mm_count))) {
-		INIT_WORK(&mm->async_put_work, mmdrop_async_fn);
-		schedule_work(&mm->async_put_work);
-	}
+        if (unlikely(atomic_dec_and_test(&mm->mm_count))) {
+                INIT_WORK(&mm->async_put_work, mmdrop_async_fn);
+                schedule_work(&mm->async_put_work);
+        }
 }
 
 static inline bool mmget_not_zero(struct mm_struct *mm)
 {
-	return atomic_inc_not_zero(&mm->mm_users);
+        return atomic_inc_not_zero(&mm->mm_users);
 }
 
 /* mmput gets rid of the mappings and all user-space */
@@ -2936,7 +2942,7 @@ extern void mm_release(struct task_struct *, struct mm_struct *);
 
 #ifdef CONFIG_HAVE_COPY_THREAD_TLS
 extern int copy_thread_tls(unsigned long, unsigned long, unsigned long,
-			struct task_struct *, unsigned long);
+                           struct task_struct *, unsigned long);
 #else
 extern int copy_thread(unsigned long, unsigned long, unsigned long,
 			struct task_struct *);
@@ -2969,12 +2975,12 @@ extern void flush_itimer_signals(void);
 extern void do_group_exit(int);
 
 extern int do_execve(struct filename *,
-		     const char __user * const __user *,
-		     const char __user * const __user *);
+                     const char __user * const __user *,
+                     const char __user * const __user *);
 extern int do_execveat(int, struct filename *,
-		       const char __user * const __user *,
-		       const char __user * const __user *,
-		       int);
+                       const char __user * const __user *,
+                       const char __user * const __user *,
+                       int);
 extern long _do_fork(unsigned long, unsigned long, unsigned long, int __user *, int __user *, unsigned long);
 extern long do_fork(unsigned long, unsigned long, unsigned long, int __user *, int __user *);
 struct task_struct *fork_idle(int);
@@ -2983,7 +2989,7 @@ extern pid_t kernel_thread(int (*fn)(void *), void *arg, unsigned long flags);
 extern void __set_task_comm(struct task_struct *tsk, const char *from, bool exec);
 static inline void set_task_comm(struct task_struct *tsk, const char *from)
 {
-	__set_task_comm(tsk, from, false);
+        __set_task_comm(tsk, from, false);
 }
 extern char *get_task_comm(char *to, struct task_struct *tsk);
 
@@ -3032,12 +3038,12 @@ extern bool current_is_single_threaded(void);
 
 static inline int get_nr_threads(struct task_struct *tsk)
 {
-	return tsk->signal->nr_threads;
+        return tsk->signal->nr_threads;
 }
 
 static inline bool thread_group_leader(struct task_struct *p)
 {
-	return p->exit_signal >= 0;
+        return p->exit_signal >= 0;
 }
 
 /* Do to the insanities of de_thread it is possible for a process
@@ -3048,24 +3054,24 @@ static inline bool thread_group_leader(struct task_struct *p)
  */
 static inline bool has_group_leader_pid(struct task_struct *p)
 {
-	return task_pid(p) == p->signal->leader_pid;
+        return task_pid(p) == p->signal->leader_pid;
 }
 
 static inline
-bool same_thread_group(struct task_struct *p1, struct task_struct *p2)
+        bool same_thread_group(struct task_struct *p1, struct task_struct *p2)
 {
-	return p1->signal == p2->signal;
+        return p1->signal == p2->signal;
 }
 
 static inline struct task_struct *next_thread(const struct task_struct *p)
 {
-	return list_entry_rcu(p->thread_group.next,
-			      struct task_struct, thread_group);
+        return list_entry_rcu(p->thread_group.next,
+                              struct task_struct, thread_group);
 }
 
 static inline int thread_group_empty(struct task_struct *p)
 {
-	return list_empty(&p->thread_group);
+        return list_empty(&p->thread_group);
 }
 
 #define delay_group_leader(p) \
@@ -3083,31 +3089,31 @@ static inline int thread_group_empty(struct task_struct *p)
  */
 static inline void task_lock(struct task_struct *p)
 {
-	spin_lock(&p->alloc_lock);
+        spin_lock(&p->alloc_lock);
 }
 
 static inline void task_unlock(struct task_struct *p)
 {
-	spin_unlock(&p->alloc_lock);
+        spin_unlock(&p->alloc_lock);
 }
 
 extern struct sighand_struct *__lock_task_sighand(struct task_struct *tsk,
-							unsigned long *flags);
+                                                  unsigned long *flags);
 
 static inline struct sighand_struct *lock_task_sighand(struct task_struct *tsk,
-						       unsigned long *flags)
+                                                       unsigned long *flags)
 {
-	struct sighand_struct *ret;
+        struct sighand_struct *ret;
 
-	ret = __lock_task_sighand(tsk, flags);
-	(void)__cond_lock(&tsk->sighand->siglock, ret);
-	return ret;
+        ret = __lock_task_sighand(tsk, flags);
+        (void)__cond_lock(&tsk->sighand->siglock, ret);
+        return ret;
 }
 
 static inline void unlock_task_sighand(struct task_struct *tsk,
-						unsigned long *flags)
+                                       unsigned long *flags)
 {
-	spin_unlock_irqrestore(&tsk->sighand->siglock, *flags);
+        spin_unlock_irqrestore(&tsk->sighand->siglock, *flags);
 }
 
 /**
@@ -3123,8 +3129,8 @@ static inline void unlock_task_sighand(struct task_struct *tsk,
  */
 static inline void threadgroup_change_begin(struct task_struct *tsk)
 {
-	might_sleep();
-	cgroup_threadgroup_change_begin(tsk);
+        might_sleep();
+        cgroup_threadgroup_change_begin(tsk);
 }
 
 /**
@@ -3135,14 +3141,14 @@ static inline void threadgroup_change_begin(struct task_struct *tsk)
  */
 static inline void threadgroup_change_end(struct task_struct *tsk)
 {
-	cgroup_threadgroup_change_end(tsk);
+        cgroup_threadgroup_change_end(tsk);
 }
 
 #ifdef CONFIG_THREAD_INFO_IN_TASK
 
 static inline struct thread_info *task_thread_info(struct task_struct *task)
 {
-	return &task->thread_info;
+        return &task->thread_info;
 }
 
 /*
@@ -3152,14 +3158,14 @@ static inline struct thread_info *task_thread_info(struct task_struct *task)
  */
 static inline void *task_stack_page(const struct task_struct *task)
 {
-	return task->stack;
+        return task->stack;
 }
 
 #define setup_thread_stack(new,old)	do { } while(0)
 
 static inline unsigned long *end_of_stack(const struct task_struct *task)
 {
-	return task->stack;
+        return task->stack;
 }
 
 #elif !defined(__HAVE_THREAD_FUNCTIONS)
@@ -3196,8 +3202,8 @@ static inline unsigned long *end_of_stack(struct task_struct *p)
 #ifdef CONFIG_THREAD_INFO_IN_TASK
 static inline void *try_get_task_stack(struct task_struct *tsk)
 {
-	return atomic_inc_not_zero(&tsk->stack_refcount) ?
-		task_stack_page(tsk) : NULL;
+        return atomic_inc_not_zero(&tsk->stack_refcount) ?
+               task_stack_page(tsk) : NULL;
 }
 
 extern void put_task_stack(struct task_struct *tsk);
@@ -3215,9 +3221,9 @@ static inline void put_task_stack(struct task_struct *tsk) {}
 
 static inline int object_is_on_stack(void *obj)
 {
-	void *stack = task_stack_page(current);
+        void *stack = task_stack_page(current);
 
-	return (obj >= stack) && (obj < (stack + THREAD_SIZE));
+        return (obj >= stack) && (obj < (stack + THREAD_SIZE));
 }
 
 extern void thread_stack_cache_init(void);
@@ -3225,20 +3231,20 @@ extern void thread_stack_cache_init(void);
 #ifdef CONFIG_DEBUG_STACK_USAGE
 static inline unsigned long stack_not_used(struct task_struct *p)
 {
-	unsigned long *n = end_of_stack(p);
+        unsigned long *n = end_of_stack(p);
 
-	do { 	/* Skip over canary */
+        do { 	/* Skip over canary */
 # ifdef CONFIG_STACK_GROWSUP
-		n--;
+                n--;
 # else
-		n++;
+                n++;
 # endif
-	} while (!*n);
+        } while (!*n);
 
 # ifdef CONFIG_STACK_GROWSUP
-	return (unsigned long)end_of_stack(p) - (unsigned long)n;
+        return (unsigned long)end_of_stack(p) - (unsigned long)n;
 # else
-	return (unsigned long)n - (unsigned long)end_of_stack(p);
+        return (unsigned long)n - (unsigned long)end_of_stack(p);
 # endif
 }
 #endif
@@ -3249,74 +3255,74 @@ extern void set_task_stack_end_magic(struct task_struct *tsk);
  */
 static inline void set_tsk_thread_flag(struct task_struct *tsk, int flag)
 {
-	set_ti_thread_flag(task_thread_info(tsk), flag);
+        set_ti_thread_flag(task_thread_info(tsk), flag);
 }
 
 static inline void clear_tsk_thread_flag(struct task_struct *tsk, int flag)
 {
-	clear_ti_thread_flag(task_thread_info(tsk), flag);
+        clear_ti_thread_flag(task_thread_info(tsk), flag);
 }
 
 static inline int test_and_set_tsk_thread_flag(struct task_struct *tsk, int flag)
 {
-	return test_and_set_ti_thread_flag(task_thread_info(tsk), flag);
+        return test_and_set_ti_thread_flag(task_thread_info(tsk), flag);
 }
 
 static inline int test_and_clear_tsk_thread_flag(struct task_struct *tsk, int flag)
 {
-	return test_and_clear_ti_thread_flag(task_thread_info(tsk), flag);
+        return test_and_clear_ti_thread_flag(task_thread_info(tsk), flag);
 }
 
 static inline int test_tsk_thread_flag(struct task_struct *tsk, int flag)
 {
-	return test_ti_thread_flag(task_thread_info(tsk), flag);
+        return test_ti_thread_flag(task_thread_info(tsk), flag);
 }
 
 static inline void set_tsk_need_resched(struct task_struct *tsk)
 {
-	set_tsk_thread_flag(tsk,TIF_NEED_RESCHED);
-	sched_state_will_schedule(tsk);
+        set_tsk_thread_flag(tsk,TIF_NEED_RESCHED);
+        sched_state_will_schedule(tsk);
 }
 
 static inline void clear_tsk_need_resched(struct task_struct *tsk)
 {
-	clear_tsk_thread_flag(tsk,TIF_NEED_RESCHED);
+        clear_tsk_thread_flag(tsk,TIF_NEED_RESCHED);
 }
 
 static inline int test_tsk_need_resched(struct task_struct *tsk)
 {
-	return unlikely(test_tsk_thread_flag(tsk,TIF_NEED_RESCHED));
+        return unlikely(test_tsk_thread_flag(tsk,TIF_NEED_RESCHED));
 }
 
 static inline int restart_syscall(void)
 {
-	set_tsk_thread_flag(current, TIF_SIGPENDING);
-	return -ERESTARTNOINTR;
+        set_tsk_thread_flag(current, TIF_SIGPENDING);
+        return -ERESTARTNOINTR;
 }
 
 static inline int signal_pending(struct task_struct *p)
 {
-	return unlikely(test_tsk_thread_flag(p,TIF_SIGPENDING));
+        return unlikely(test_tsk_thread_flag(p,TIF_SIGPENDING));
 }
 
 static inline int __fatal_signal_pending(struct task_struct *p)
 {
-	return unlikely(sigismember(&p->pending.signal, SIGKILL));
+        return unlikely(sigismember(&p->pending.signal, SIGKILL));
 }
 
 static inline int fatal_signal_pending(struct task_struct *p)
 {
-	return signal_pending(p) && __fatal_signal_pending(p);
+        return signal_pending(p) && __fatal_signal_pending(p);
 }
 
 static inline int signal_pending_state(long state, struct task_struct *p)
 {
-	if (!(state & (TASK_INTERRUPTIBLE | TASK_WAKEKILL)))
-		return 0;
-	if (!signal_pending(p))
-		return 0;
+        if (!(state & (TASK_INTERRUPTIBLE | TASK_WAKEKILL)))
+                return 0;
+        if (!signal_pending(p))
+                return 0;
 
-	return (state & TASK_INTERRUPTIBLE) || __fatal_signal_pending(p);
+        return (state & TASK_INTERRUPTIBLE) || __fatal_signal_pending(p);
 }
 
 /*
@@ -3354,18 +3360,18 @@ extern int __cond_resched_softirq(void);
 static inline void cond_resched_rcu(void)
 {
 #if defined(CONFIG_DEBUG_ATOMIC_SLEEP) || !defined(CONFIG_PREEMPT_RCU)
-	rcu_read_unlock();
-	cond_resched();
-	rcu_read_lock();
+        rcu_read_unlock();
+        cond_resched();
+        rcu_read_lock();
 #endif
 }
 
 static inline unsigned long get_preempt_disable_ip(struct task_struct *p)
 {
 #ifdef CONFIG_DEBUG_PREEMPT
-	return p->preempt_disable_ip;
+        return p->preempt_disable_ip;
 #else
-	return 0;
+        return 0;
 #endif
 }
 
@@ -3377,9 +3383,9 @@ static inline unsigned long get_preempt_disable_ip(struct task_struct *p)
 static inline int spin_needbreak(spinlock_t *lock)
 {
 #ifdef CONFIG_PREEMPT
-	return spin_is_contended(lock);
+        return spin_is_contended(lock);
 #else
-	return 0;
+        return 0;
 #endif
 }
 
@@ -3390,43 +3396,43 @@ static inline int spin_needbreak(spinlock_t *lock)
 #ifdef TIF_POLLING_NRFLAG
 static inline int tsk_is_polling(struct task_struct *p)
 {
-	return test_tsk_thread_flag(p, TIF_POLLING_NRFLAG);
+        return test_tsk_thread_flag(p, TIF_POLLING_NRFLAG);
 }
 
 static inline void __current_set_polling(void)
 {
-	set_thread_flag(TIF_POLLING_NRFLAG);
+        set_thread_flag(TIF_POLLING_NRFLAG);
 }
 
 static inline bool __must_check current_set_polling_and_test(void)
 {
-	__current_set_polling();
+        __current_set_polling();
 
-	/*
-	 * Polling state must be visible before we test NEED_RESCHED,
-	 * paired by resched_curr()
-	 */
-	smp_mb__after_atomic();
+        /*
+         * Polling state must be visible before we test NEED_RESCHED,
+         * paired by resched_curr()
+         */
+        smp_mb__after_atomic();
 
-	return unlikely(tif_need_resched());
+        return unlikely(tif_need_resched());
 }
 
 static inline void __current_clr_polling(void)
 {
-	clear_thread_flag(TIF_POLLING_NRFLAG);
+        clear_thread_flag(TIF_POLLING_NRFLAG);
 }
 
 static inline bool __must_check current_clr_polling_and_test(void)
 {
-	__current_clr_polling();
+        __current_clr_polling();
 
-	/*
-	 * Polling state must be visible before we test NEED_RESCHED,
-	 * paired by resched_curr()
-	 */
-	smp_mb__after_atomic();
+        /*
+         * Polling state must be visible before we test NEED_RESCHED,
+         * paired by resched_curr()
+         */
+        smp_mb__after_atomic();
 
-	return unlikely(tif_need_resched());
+        return unlikely(tif_need_resched());
 }
 
 #else
@@ -3446,22 +3452,22 @@ static inline bool __must_check current_clr_polling_and_test(void)
 
 static inline void current_clr_polling(void)
 {
-	__current_clr_polling();
+        __current_clr_polling();
 
-	/*
-	 * Ensure we check TIF_NEED_RESCHED after we clear the polling bit.
-	 * Once the bit is cleared, we'll get IPIs with every new
-	 * TIF_NEED_RESCHED and the IPI handler, scheduler_ipi(), will also
-	 * fold.
-	 */
-	smp_mb(); /* paired with resched_curr() */
+        /*
+         * Ensure we check TIF_NEED_RESCHED after we clear the polling bit.
+         * Once the bit is cleared, we'll get IPIs with every new
+         * TIF_NEED_RESCHED and the IPI handler, scheduler_ipi(), will also
+         * fold.
+         */
+        smp_mb(); /* paired with resched_curr() */
 
-	preempt_fold_need_resched();
+        preempt_fold_need_resched();
 }
 
 static __always_inline bool need_resched(void)
 {
-	return unlikely(tif_need_resched());
+        return unlikely(tif_need_resched());
 }
 
 /*
@@ -3483,11 +3489,11 @@ extern void signal_wake_up_state(struct task_struct *t, unsigned int state);
 
 static inline void signal_wake_up(struct task_struct *t, bool resume)
 {
-	signal_wake_up_state(t, resume ? TASK_WAKEKILL : 0);
+        signal_wake_up_state(t, resume ? TASK_WAKEKILL : 0);
 }
 static inline void ptrace_signal_wake_up(struct task_struct *t, bool resume)
 {
-	signal_wake_up_state(t, resume ? __TASK_TRACED : 0);
+        signal_wake_up_state(t, resume ? __TASK_TRACED : 0);
 }
 
 /*
@@ -3498,15 +3504,15 @@ static inline void ptrace_signal_wake_up(struct task_struct *t, bool resume)
 static inline unsigned int task_cpu(const struct task_struct *p)
 {
 #ifdef CONFIG_THREAD_INFO_IN_TASK
-	return p->cpu;
+        return p->cpu;
 #else
-	return task_thread_info(p)->cpu;
+        return task_thread_info(p)->cpu;
 #endif
 }
 
 static inline int task_node(const struct task_struct *p)
 {
-	return cpu_to_node(task_cpu(p));
+        return cpu_to_node(task_cpu(p));
 }
 
 extern void set_task_cpu(struct task_struct *p, unsigned int cpu);
@@ -3532,27 +3538,27 @@ extern struct task_group root_task_group;
 #endif /* CONFIG_CGROUP_SCHED */
 
 extern int task_can_switch_user(struct user_struct *up,
-					struct task_struct *tsk);
+                                struct task_struct *tsk);
 
 #ifdef CONFIG_TASK_XACCT
 static inline void add_rchar(struct task_struct *tsk, ssize_t amt)
 {
-	tsk->ioac.rchar += amt;
+        tsk->ioac.rchar += amt;
 }
 
 static inline void add_wchar(struct task_struct *tsk, ssize_t amt)
 {
-	tsk->ioac.wchar += amt;
+        tsk->ioac.wchar += amt;
 }
 
 static inline void inc_syscr(struct task_struct *tsk)
 {
-	tsk->ioac.syscr++;
+        tsk->ioac.syscr++;
 }
 
 static inline void inc_syscw(struct task_struct *tsk)
 {
-	tsk->ioac.syscw++;
+        tsk->ioac.syscw++;
 }
 #else
 static inline void add_rchar(struct task_struct *tsk, ssize_t amt)
@@ -3585,25 +3591,25 @@ static inline void mm_update_next_owner(struct mm_struct *mm)
 #endif /* CONFIG_MEMCG */
 
 static inline unsigned long task_rlimit(const struct task_struct *tsk,
-		unsigned int limit)
+                                        unsigned int limit)
 {
-	return READ_ONCE(tsk->signal->rlim[limit].rlim_cur);
+        return READ_ONCE(tsk->signal->rlim[limit].rlim_cur);
 }
 
 static inline unsigned long task_rlimit_max(const struct task_struct *tsk,
-		unsigned int limit)
+                                            unsigned int limit)
 {
-	return READ_ONCE(tsk->signal->rlim[limit].rlim_max);
+        return READ_ONCE(tsk->signal->rlim[limit].rlim_max);
 }
 
 static inline unsigned long rlimit(unsigned int limit)
 {
-	return task_rlimit(current, limit);
+        return task_rlimit(current, limit);
 }
 
 static inline unsigned long rlimit_max(unsigned int limit)
 {
-	return task_rlimit_max(current, limit);
+        return task_rlimit_max(current, limit);
 }
 
 #define SCHED_CPUFREQ_RT	(1U << 0)
@@ -3614,12 +3620,12 @@ static inline unsigned long rlimit_max(unsigned int limit)
 
 #ifdef CONFIG_CPU_FREQ
 struct update_util_data {
-       void (*func)(struct update_util_data *data, u64 time, unsigned int flags);
+    void (*func)(struct update_util_data *data, u64 time, unsigned int flags);
 };
 
 void cpufreq_add_update_util_hook(int cpu, struct update_util_data *data,
-                       void (*func)(struct update_util_data *data, u64 time,
-				    unsigned int flags));
+                                  void (*func)(struct update_util_data *data, u64 time,
+                                               unsigned int flags));
 void cpufreq_remove_update_util_hook(int cpu);
 #endif /* CONFIG_CPU_FREQ */
 

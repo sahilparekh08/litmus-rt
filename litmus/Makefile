@@ -34,3 +34,5 @@ obj-$(CONFIG_SCHED_OVERHEAD_TRACE) += trace.o
 obj-y += sched_pres.o
 
 obj-y += reservations/
+
+obj-y += sched_rt_labelled_edf.o
